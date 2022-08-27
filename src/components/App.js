@@ -1,5 +1,7 @@
+import Calculator from "./Calculator";
+
 const App = () => {
-  return <>Hello, World!</>
+  return (<Calculator />);
 };
 
 export default App;
