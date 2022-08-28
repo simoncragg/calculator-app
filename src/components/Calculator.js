@@ -1,45 +1,34 @@
-import { useState, useEffect } from "react";
+import { useReducer } from "react";
 import Screen from "./Screen";
 import Button from "./Button";
-
-export const MAX_DIGITS = 16;
+import OperatorButton from "./OperatorButton";
+import { ActionTypes, calcReducer } from "../reducers/calcReducer"
 
 const Calculator = () => {
   
-  const [calc, setCalc] = useState({});
-  
-  useEffect(() => {
-    setCalc({
+  const initialState = {
       currentOperand: "0",
+      expression: "",
       output: "0",
-    });
-  }, []);
-
-  const updateCurrentOperand = (e) => {
-    if (calc.currentOperand.replace(".", "").length >= MAX_DIGITS) return;
-
-    const digit = e.target.innerHTML;
-    if (digit === "." && calc.currentOperand.includes(".")) return;
-    
-    const isFirstDigit = (calc.currentOperand === "0" && digit !== ".");
-    const currentOperand = (isFirstDigit) ? digit : calc.currentOperand + digit;
-    setCalc({
-      ...calc,
-      currentOperand,
-      output: formatNumber(currentOperand),
-    });
+      lastInput: undefined
   };
 
-  const formatNumber = (strNumber) => {
-    const numberParts = strNumber.split(".");
-    const integerPart = parseInt(numberParts[0]).toLocaleString("en", { maximumFractionDigits: 0});
-    const fractionalPart = numberParts.length > 1 ? numberParts[1] : "";
-    return (strNumber.includes(".")) 
-      ? `${integerPart}.${fractionalPart}`
-      : integerPart;
+  const [calc, dispatch] = useReducer(calcReducer, initialState);
+
+  const handleDigitButtonClick = (e) => {
+    dispatch({ type: ActionTypes.UPDATE_CURRENT_OPERAND, payload: { digit: e.target.innerHTML }});
+  };
+
+  const handleOperatorButtonClick = (e) => {
+    dispatch({ type: ActionTypes.UPDATE_EXPRESSION, payload: { operator: e.target.getAttribute("data-operator") }});
+  };
+
+  const handleEqualsButtonClick = () => {
+    dispatch({ type: ActionTypes.EVALUATE_EXPRESSION });
   };
 
   return (
+    //console.log(calc),
     <>
       <div className="calculator">
         <Screen value={calc.output} />
@@ -47,22 +36,22 @@ const Calculator = () => {
           <Button className="fn">AC</Button>
           <Button className="fn">+/-</Button>
           <Button className="fn">%</Button>
-          <Button className="sign">÷</Button>
-          <Button onClick={updateCurrentOperand}>7</Button>
-          <Button onClick={updateCurrentOperand}>8</Button>
-          <Button onClick={updateCurrentOperand}>9</Button>
-          <Button className="sign">×</Button>
-          <Button onClick={updateCurrentOperand}>4</Button>
-          <Button onClick={updateCurrentOperand}>5</Button>
-          <Button onClick={updateCurrentOperand}>6</Button>
-          <Button className="sign">-</Button>
-          <Button onClick={updateCurrentOperand}>1</Button>
-          <Button onClick={updateCurrentOperand}>2</Button>
-          <Button onClick={updateCurrentOperand}>3</Button>
-          <Button className="sign">+</Button>
-          <Button className="span-two" onClick={updateCurrentOperand}>0</Button>
-          <Button onClick={updateCurrentOperand}>.</Button>
-          <Button>=</Button>
+          <OperatorButton op="/" lastInput={calc.lastInput} onClick={handleOperatorButtonClick}>÷</OperatorButton>
+          <Button onClick={handleDigitButtonClick}>7</Button>
+          <Button onClick={handleDigitButtonClick}>8</Button>
+          <Button onClick={handleDigitButtonClick}>9</Button>
+          <OperatorButton op="*" lastInput={calc.lastInput} onClick={handleOperatorButtonClick}>×</OperatorButton>
+          <Button onClick={handleDigitButtonClick}>4</Button>
+          <Button onClick={handleDigitButtonClick}>5</Button>
+          <Button onClick={handleDigitButtonClick}>6</Button>
+          <OperatorButton op="-" lastInput={calc.lastInput} onClick={handleOperatorButtonClick}>−</OperatorButton>
+          <Button onClick={handleDigitButtonClick}>1</Button>
+          <Button onClick={handleDigitButtonClick}>2</Button>
+          <Button onClick={handleDigitButtonClick}>3</Button>
+          <OperatorButton op="+" lastInput={calc.lastInput} onClick={handleOperatorButtonClick}>+</OperatorButton>
+          <Button className="span-two" onClick={handleDigitButtonClick}>0</Button>
+          <Button onClick={handleDigitButtonClick}>.</Button>
+          <Button onClick={handleEqualsButtonClick} className="sign">=</Button>
         </div>
       </div>
     </>

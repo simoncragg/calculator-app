@@ -128,6 +128,12 @@ button.sign:active {
   background-color: #FFB040;
 }
 
+button.sign:disabled {
+  color: #FF9500;
+  background-color: #FFFFFF;
+  font-size: 40px;
+}
+
 .span-two {
   grid-column: 1 / 3;
   text-align: left;

@@ -40,6 +40,29 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
+test.each([
+  {inputs: "1+1=", expected: "2"},
+  {inputs: "0.1+0.1=", expected: "0.2"},
+  {inputs: ".01+0.01=", expected: "0.02"},
+  {inputs: "32768.16384812902+16384.08192406451=", expected: "49,152.24577219354"},
+  {inputs: "99+1=", expected: "100"},
+  {inputs: "1−1=", expected: "0"},
+  {inputs: ".01−.001=", expected: "0.009"},
+  {inputs: "100−99=", expected: "1"},
+  {inputs: "1×0=", expected: "0"},
+  {inputs: "10×0.1=", expected: "1"},
+  {inputs: "10.1×0.1=", expected: "1.01"},
+  {inputs: "10×10=", expected: "100"},
+  {inputs: "1÷0=", expected: "Error"},
+  {inputs: "1÷1=", expected: "1"},
+  {inputs: "10÷5=", expected: "2"},
+  {inputs: "100÷0.5=", expected: "200"},
+])("can do arithmetc $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
 const pressButtons = (inputs) => {
   for (const input of inputs.split("")) {
     pressButton(input);
