@@ -63,6 +63,27 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
+test.each([
+  {inputs: "5+5+", expected: "10"},
+  {inputs: "5+5−", expected: "10"},
+  {inputs: "5×5×", expected: "25"},
+  {inputs: "5÷5÷", expected: "1"},
+  {inputs: "5×5÷", expected: "25"},
+  {inputs: "5÷5×", expected: "1"},
+  {inputs: "5+5×", expected: "5"},
+  {inputs: "5+5÷", expected: "5"},
+  {inputs: "5−5×", expected: "5"},
+  {inputs: "5−5÷", expected: "5"},
+  {inputs: "5+5×5×", expected: "25"},
+  {inputs: "5−5×5×", expected: "25"},
+  {inputs: "5+5÷5×", expected: "1"},
+  {inputs: "5−5÷5×", expected: "1"},
+])("can display any MDAS simplification steps when an operator is selected $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
 const pressButtons = (inputs) => {
   for (const input of inputs.split("")) {
     pressButton(input);

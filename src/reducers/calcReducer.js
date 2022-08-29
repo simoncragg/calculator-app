@@ -48,10 +48,10 @@ function updateExpression (calc, newOperator) {
     : calc.expression + calc.currentOperand;
 
   return {
-    ...calc,
     currentOperand: "",
     expression: expression + newOperator,
-    lastInput: newOperator
+    lastInput: newOperator,
+    output: buildOutputForNewOperator(calc, expression, newOperator)
   };
 }
 
@@ -65,8 +65,42 @@ function evaluateExpression (calc) {
   };
 }
 
+function buildOutputForNewOperator(calc, expression, newOperator) {
+  const evaluationIndex = getEvaluationIndex(expression, newOperator);
+  if (evaluationIndex > -1) {
+    const evaluation = evaluate(expression.substring(evaluationIndex));
+    return formatNumber(roundNumber(evaluation).toString());
+  }
+  return calc.currentOperand;
+}
+
+function getEvaluationIndex(expression, newOperator) {
+  const {lastOperator, i} = getLastOperator(expression);
+  if (!lastOperator) return -1;
+  if (isDivideOrMultiply(lastOperator) && isDivideOrMultiply(newOperator)) return i-1;
+  if (isAddOrSubtract(lastOperator) && isAddOrSubtract(newOperator)) return 0;
+  return -1;
+}
+
+function getLastOperator(expression) {
+  for (let i = expression.length - 1; i > -1; i--) {
+    if (isOperator(expression[i])) {
+      return {lastOperator: expression[i], i};
+    }
+  }
+  return {undefined, i: -1};
+}
+
 function isOperator(candidate) {
   return "/*-+".includes(candidate);
+}
+
+function isAddOrSubtract(operator) {
+  return "+-".indexOf(operator) > -1;
+}
+
+function isDivideOrMultiply(operator) {
+  return "/*".indexOf(operator) > -1;
 }
 
 function formatNumber(strNumber) {
