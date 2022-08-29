@@ -43,7 +43,7 @@ function updateCurrentOperand (calc, digit) {
     ...calc,
     currentOperand,
     lastInput: digit,
-    output: formatNumber(currentOperand)
+    output: format(currentOperand)
   };
 }
 
@@ -70,7 +70,7 @@ function invertNumber(calc) {
     ...calc,
     currentOperand: strInvertedNumber,
     lastInput: INVERT_SYMBOL,
-    output: formatNumber(strInvertedNumber)
+    output: format(strInvertedNumber)
   };
 }
 
@@ -82,7 +82,7 @@ function calculatePercent(calc) {
     ...calc,
     currentOperand: strPercentResult,
     lastInput: "%",
-    output: formatNumber(strPercentResult)
+    output: format(strPercentResult)
   };
 }
 
@@ -93,7 +93,7 @@ function evaluateExpression (calc) {
     currentOperand: result,
     expression: "",
     lastInput: "=",
-    output: formatNumber(roundNumber(result))
+    output: format(roundNumber(result))
   };
 }
 
@@ -101,7 +101,7 @@ function buildOutputForNewOperator(calc, expression, newOperator) {
   const evaluationIndex = getEvaluationIndex(expression, newOperator);
   if (evaluationIndex > -1) {
     const evaluation = evaluate(expression.substring(evaluationIndex));
-    return formatNumber(roundNumber(evaluation).toString());
+    return format(roundNumber(evaluation).toString());
   }
   return calc.currentOperand;
 }
@@ -135,7 +135,7 @@ function isDivideOrMultiply(operator) {
   return "/*".indexOf(operator) > -1;
 }
 
-function formatNumber(strNumber) {
+function format(strNumber) {
   if (isInfinity(strNumber)) return "Error";
   const numberParts = strNumber.split(".");
   const integerPart = parseInt(numberParts[0]).toLocaleString("en", { maximumFractionDigits: 0});
