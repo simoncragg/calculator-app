@@ -12,7 +12,7 @@ test("displays zero on start up", async () => {
 test.each([
   {inputs: "12345678901234567", expected: "1,234,567,890,123,456"},
   {inputs: "1.2345678901234567", expected: "1.234567890123456"}
-])("operand cannot exceed 16 digits", async ({inputs, expected}) => {
+])("operand cannot exceed 16 digits: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
@@ -23,7 +23,7 @@ test.each([
   {inputs: "00", expected: "0"},
   {inputs: "01", expected: "1"},
   {inputs: "123", expected: "123"},
-])("can enter integer operand $inputs -> $expected", async ({inputs, expected}) => {
+])("can enter integer operand: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
@@ -35,7 +35,7 @@ test.each([
   {inputs: "0.00", expected: "0.00"},
   {inputs: "0.009", expected: "0.009"},
   {inputs: "12.0210", expected: "12.0210"},
-])("can enter decimal operand $inputs [$expected]", async ({inputs, expected}) => {
+])("can enter decimal operand: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
@@ -58,7 +58,7 @@ test.each([
   {inputs: "1÷1=", expected: "1"},
   {inputs: "10÷5=", expected: "2"},
   {inputs: "100÷0.5=", expected: "200"},
-])("can do arithmetc $inputs [$expected]", async ({inputs, expected}) => {
+])("can do arithmetc: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
