@@ -1,11 +1,11 @@
 import { evaluate } from 'mathjs'
-
-export const MAX_DIGITS = 16;
+import { MAX_DIGITS, INVERT_SYMBOL } from '../constants';
 
 export const ActionTypes = {
   UPDATE_CURRENT_OPERAND: "UPDATE_CURRENT_OPERAND",
   UPDATE_EXPRESSION: "UPDATE_EXPRESSION",
-  EVALUATE_EXPRESSION: "EVALUATE_EXPRESSION"
+  EVALUATE_EXPRESSION: "EVALUATE_EXPRESSION",
+  INVERT_NUMBER: "INVERT_NUMBER"
 };
 
 export function calcReducer(calc, action) {
@@ -20,6 +20,9 @@ export function calcReducer(calc, action) {
     case ActionTypes.EVALUATE_EXPRESSION:
       return evaluateExpression(calc);
 
+    case ActionTypes.INVERT_NUMBER:
+      return invertNumber(calc);
+
     default:
       return calc;
   }
@@ -28,8 +31,8 @@ export function calcReducer(calc, action) {
 function updateCurrentOperand (calc, digit) {
   if (calc.currentOperand.replace(".", "").length >= MAX_DIGITS) return calc;
   if (digit === "." && calc.currentOperand.includes(".")) return calc;
-
-  const isFirstDigit = (calc.currentOperand === "0" && digit !== ".");
+  
+  const isFirstDigit = (calc.currentOperand === "0" && digit !== ".") || calc.lastInput === "=";
   const currentOperand = (isFirstDigit) ? digit : calc.currentOperand + digit;
 
   return {
@@ -55,13 +58,26 @@ function updateExpression (calc, newOperator) {
   };
 }
 
+function invertNumber(calc) {
+  if (calc.lastInput === "=" && calc.output === "Error") return calc;
+  const invertedNumber = parseFloat(calc.currentOperand) * -1;
+  const strInvertedNumber = invertedNumber.toString();
+  return {
+    ...calc,
+    currentOperand: strInvertedNumber,
+    lastInput: INVERT_SYMBOL,
+    output: formatNumber(strInvertedNumber)
+  };
+}
+
 function evaluateExpression (calc) {
   const expression = calc.expression + calc.currentOperand;
+  const result = evaluate(expression).toString();
   return {
-    currentOperand: "",
+    currentOperand: result,
     expression: "",
     lastInput: "=",
-    output: formatNumber(roundNumber(evaluate(expression)).toString())
+    output: formatNumber(roundNumber(result))
   };
 }
 

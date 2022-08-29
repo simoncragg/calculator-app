@@ -2,7 +2,8 @@ import { useReducer } from "react";
 import Screen from "./Screen";
 import Button from "./Button";
 import OperatorButton from "./OperatorButton";
-import { ActionTypes, calcReducer } from "../reducers/calcReducer"
+import { ActionTypes, calcReducer } from "../reducers/calcReducer";
+import { INVERT_SYMBOL } from "../constants";
 
 const Calculator = () => {
   
@@ -23,6 +24,10 @@ const Calculator = () => {
     dispatch({ type: ActionTypes.UPDATE_EXPRESSION, payload: { operator: e.target.getAttribute("data-operator") }});
   };
 
+  const handleInvertNumberButtonClick = () => {
+    dispatch({ type: ActionTypes.INVERT_NUMBER });
+  };
+
   const handleEqualsButtonClick = () => {
     dispatch({ type: ActionTypes.EVALUATE_EXPRESSION });
   };
@@ -34,7 +39,7 @@ const Calculator = () => {
         <Screen value={calc.output} />
         <div className="buttonBox">
           <Button className="fn">AC</Button>
-          <Button className="fn">+/-</Button>
+          <Button className="fn" onClick={handleInvertNumberButtonClick}>{INVERT_SYMBOL}</Button>
           <Button className="fn">%</Button>
           <OperatorButton op="/" lastInput={calc.lastInput} onClick={handleOperatorButtonClick}>÷</OperatorButton>
           <Button onClick={handleDigitButtonClick}>7</Button>

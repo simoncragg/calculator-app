@@ -2,6 +2,7 @@ import React from "react"
 import {render, fireEvent, waitFor, screen} from "@testing-library/react"
 import "@testing-library/jest-dom"
 import Calculator from "./Calculator"
+import { INVERT_SYMBOL } from "../constants";
 
 test("displays zero on start up", async () => {
   render(<Calculator />);
@@ -78,7 +79,23 @@ test.each([
   {inputs: "5−5×5×", expected: "25"},
   {inputs: "5+5÷5×", expected: "1"},
   {inputs: "5−5÷5×", expected: "1"},
-])("can display any MDAS simplification steps when an operator is selected $inputs [$expected]", async ({inputs, expected}) => {
+])("can display any MDAS simplification steps when an operator is selected: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
+test.each([
+  {inputs: "10I", expected: "-10"},
+  {inputs: "0.1×10I=", expected: "-1"},
+  {inputs: "10II", expected: "10"},
+  {inputs: "10I+10=", expected: "0"},
+  {inputs: "10I+10I=", expected: "-20"},
+  {inputs: "10II+10I=", expected: "0"},
+  {inputs: "10I+10I=I", expected: "20"},
+  {inputs: "10I+10I=I−10=I÷2=I×3I=", expected: "-15"},
+  {inputs: "1÷0=I", expected: "Error"},
+])("can invert number: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
@@ -91,7 +108,8 @@ const pressButtons = (inputs) => {
 };
 
 const pressButton = (name) => {
-  fireEvent.click(screen.getByRole("button", { name }));
+  const mappedName = name === "I" ? INVERT_SYMBOL : name;
+  fireEvent.click(screen.getByRole("button", { name: mappedName }));
 };
 
 const assertOutputIsEqualTo = async (expected) => {
