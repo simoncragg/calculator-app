@@ -101,6 +101,17 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
+test.each([
+  {inputs: "500%", expected: "5"},
+  {inputs: "50%", expected: "0.5"},
+  {inputs: "5%", expected: "0.05"},
+  {inputs: "0.5%", expected: "0.005"}
+])("can calculate percent: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
 const pressButtons = (inputs) => {
   for (const input of inputs.split("")) {
     pressButton(input);

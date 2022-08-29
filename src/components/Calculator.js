@@ -28,6 +28,10 @@ const Calculator = () => {
     dispatch({ type: ActionTypes.INVERT_NUMBER });
   };
 
+  const handleCalculatePercentButtonClick = () => {
+    dispatch({ type: ActionTypes.CALCULATE_PERCENT });
+  };
+
   const handleEqualsButtonClick = () => {
     dispatch({ type: ActionTypes.EVALUATE_EXPRESSION });
   };
@@ -40,7 +44,7 @@ const Calculator = () => {
         <div className="buttonBox">
           <Button className="fn">AC</Button>
           <Button className="fn" onClick={handleInvertNumberButtonClick}>{INVERT_SYMBOL}</Button>
-          <Button className="fn">%</Button>
+          <Button className="fn" onClick={handleCalculatePercentButtonClick}>%</Button>
           <OperatorButton op="/" lastInput={calc.lastInput} onClick={handleOperatorButtonClick}>÷</OperatorButton>
           <Button onClick={handleDigitButtonClick}>7</Button>
           <Button onClick={handleDigitButtonClick}>8</Button>

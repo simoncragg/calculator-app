@@ -5,7 +5,8 @@ export const ActionTypes = {
   UPDATE_CURRENT_OPERAND: "UPDATE_CURRENT_OPERAND",
   UPDATE_EXPRESSION: "UPDATE_EXPRESSION",
   EVALUATE_EXPRESSION: "EVALUATE_EXPRESSION",
-  INVERT_NUMBER: "INVERT_NUMBER"
+  INVERT_NUMBER: "INVERT_NUMBER",
+  CALCULATE_PERCENT: "PERCENT"
 };
 
 export function calcReducer(calc, action) {
@@ -22,6 +23,9 @@ export function calcReducer(calc, action) {
 
     case ActionTypes.INVERT_NUMBER:
       return invertNumber(calc);
+
+    case ActionTypes.CALCULATE_PERCENT:
+      return calculatePercent(calc);
 
     default:
       return calc;
@@ -67,6 +71,18 @@ function invertNumber(calc) {
     currentOperand: strInvertedNumber,
     lastInput: INVERT_SYMBOL,
     output: formatNumber(strInvertedNumber)
+  };
+}
+
+function calculatePercent(calc) {
+  if (calc.lastInput === "=" && calc.output === "Error") return calc;
+  const percentResult = parseFloat(calc.currentOperand) / 100;
+  const strPercentResult = percentResult.toString();
+  return {
+    ...calc,
+    currentOperand: strPercentResult,
+    lastInput: "%",
+    output: formatNumber(strPercentResult)
   };
 }
 
