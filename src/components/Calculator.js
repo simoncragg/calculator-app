@@ -16,12 +16,11 @@ const Calculator = () => {
 
   const [calc, dispatch] = useReducer(calcReducer, initialState);
 
-  const handleDigitButtonClick = (e) => {
-    dispatch({ type: ActionTypes.UPDATE_CURRENT_OPERAND, payload: { digit: e.target.innerHTML }});
-  };
-
-  const handleOperatorButtonClick = (e) => {
-    dispatch({ type: ActionTypes.UPDATE_EXPRESSION, payload: { operator: e.target.getAttribute("data-operator") }});
+  const handleClearButtonClick = (e) => {
+    const actionType = e.target.innerHTML === "AC"
+      ? ActionTypes.ALL_CLEAR
+      : ActionTypes.CLEAR;
+    dispatch({ type: actionType });
   };
 
   const handleInvertNumberButtonClick = () => {
@@ -30,6 +29,14 @@ const Calculator = () => {
 
   const handleCalculatePercentButtonClick = () => {
     dispatch({ type: ActionTypes.CALCULATE_PERCENT });
+  };
+
+  const handleDigitButtonClick = (e) => {
+    dispatch({ type: ActionTypes.UPDATE_CURRENT_OPERAND, payload: { digit: e.target.innerHTML }});
+  };
+
+  const handleOperatorButtonClick = (e) => {
+    dispatch({ type: ActionTypes.UPDATE_EXPRESSION, payload: { operator: e.target.getAttribute("data-operator") }});
   };
 
   const handleEqualsButtonClick = () => {
@@ -42,7 +49,7 @@ const Calculator = () => {
       <div className="calculator">
         <Screen value={calc.output} />
         <div className="buttonBox">
-          <Button className="fn">AC</Button>
+          <Button className="fn" onClick={handleClearButtonClick}>{calc.output === "0" ? "AC" : "C"}</Button>
           <Button className="fn" onClick={handleInvertNumberButtonClick}>{INVERT_SYMBOL}</Button>
           <Button className="fn" onClick={handleCalculatePercentButtonClick}>%</Button>
           <OperatorButton op="/" lastInput={calc.lastInput} onClick={handleOperatorButtonClick}>÷</OperatorButton>

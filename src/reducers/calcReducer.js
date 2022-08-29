@@ -6,12 +6,27 @@ export const ActionTypes = {
   UPDATE_EXPRESSION: "UPDATE_EXPRESSION",
   EVALUATE_EXPRESSION: "EVALUATE_EXPRESSION",
   INVERT_NUMBER: "INVERT_NUMBER",
-  CALCULATE_PERCENT: "PERCENT"
+  CALCULATE_PERCENT: "PERCENT",
+  ALL_CLEAR: "ALL_CLEAR",
+  CLEAR: "CLEAR"
 };
 
 export function calcReducer(calc, action) {
 
   switch (action.type) {
+
+    case ActionTypes.ALL_CLEAR:
+      return allClear();
+
+    case ActionTypes.CLEAR:
+      return clear(calc);
+
+    case ActionTypes.INVERT_NUMBER:
+      return invertNumber(calc);
+
+    case ActionTypes.CALCULATE_PERCENT:
+      return calculatePercent(calc);
+
     case ActionTypes.UPDATE_CURRENT_OPERAND:
       return updateCurrentOperand(calc, action.payload.digit);
 
@@ -20,12 +35,6 @@ export function calcReducer(calc, action) {
 
     case ActionTypes.EVALUATE_EXPRESSION:
       return evaluateExpression(calc);
-
-    case ActionTypes.INVERT_NUMBER:
-      return invertNumber(calc);
-
-    case ActionTypes.CALCULATE_PERCENT:
-      return calculatePercent(calc);
 
     default:
       return calc;
@@ -93,7 +102,26 @@ function evaluateExpression (calc) {
     currentOperand: result,
     expression: "",
     lastInput: "=",
-    output: format(roundNumber(result))
+    output: format(round(result))
+  };
+}
+
+function allClear() {
+  return {
+    currentOperand: "0",
+    expression: "",
+    operator: undefined,
+    lastInput: undefined,
+    output: "0"
+  };
+}
+
+function clear(calc) {
+  return {
+    ...calc,
+    currentOperand: "0",
+    lastInput: "AC",
+    output: "0"
   };
 }
 
@@ -101,7 +129,7 @@ function buildOutputForNewOperator(calc, expression, newOperator) {
   const evaluationIndex = getEvaluationIndex(expression, newOperator);
   if (evaluationIndex > -1) {
     const evaluation = evaluate(expression.substring(evaluationIndex));
-    return format(roundNumber(evaluation).toString());
+    return format(round(evaluation).toString());
   }
   return calc.currentOperand;
 }
@@ -145,7 +173,7 @@ function format(strNumber) {
     : integerPart;
 }
 
-function roundNumber(number) {
+function round(number) {
   if (isInfinity(number)) return number;
   const strNumber = number.toString();
   const floatNumber = parseFloat(number);

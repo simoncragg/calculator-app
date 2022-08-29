@@ -112,6 +112,18 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
+test.each([
+  {inputs: "A", expected: "0"},
+  {inputs: "5C", expected: "0"},
+  {inputs: "5+5C6", expected: "6"},
+  {inputs: "5+5C6=", expected: "11"},
+  {inputs: "5+5CA", expected: "0"},
+])("can clear memory: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
 const pressButtons = (inputs) => {
   for (const input of inputs.split("")) {
     pressButton(input);
@@ -119,7 +131,12 @@ const pressButtons = (inputs) => {
 };
 
 const pressButton = (name) => {
-  const mappedName = name === "I" ? INVERT_SYMBOL : name;
+  const mappedName = name === "A"
+    ? "AC"
+    : name === "I"
+      ? INVERT_SYMBOL
+      : name;
+
   fireEvent.click(screen.getByRole("button", { name: mappedName }));
 };
 
