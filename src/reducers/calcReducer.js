@@ -41,6 +41,51 @@ export function calcReducer(calc, action) {
   }
 }
 
+function allClear() {
+  return {
+    currentOperand: "0",
+    expression: "",
+    operator: undefined,
+    lastOperation: undefined,
+    lastInput: undefined,
+    output: "0"
+  };
+}
+
+function clear(calc) {
+  return {
+    ...calc,
+    currentOperand: "0",
+    lastOperation: undefined,
+    lastInput: "AC",
+    output: "0"
+  };
+}
+
+function invertNumber(calc) {
+  if (calc.lastInput === "=" && calc.output === "Error") return calc;
+  const invertedNumber = parseFloat(calc.currentOperand) * -1;
+  const strInvertedNumber = invertedNumber.toString();
+  return {
+    ...calc,
+    currentOperand: strInvertedNumber,
+    lastInput: INVERT_SYMBOL,
+    output: format(strInvertedNumber)
+  };
+}
+
+function calculatePercent(calc) {
+  if (calc.lastInput === "=" && calc.output === "Error") return calc;
+  const percentResult = parseFloat(calc.currentOperand) / 100;
+  const strPercentResult = percentResult.toString();
+  return {
+    ...calc,
+    currentOperand: strPercentResult,
+    lastInput: "%",
+    output: format(strPercentResult)
+  };
+}
+
 function updateCurrentOperand (calc, digit) {
   if (calc.currentOperand.replace(".", "").length >= MAX_DIGITS) return calc;
   if (digit === "." && calc.currentOperand.includes(".")) return calc;
@@ -69,30 +114,6 @@ function updateExpression (calc, newOperator) {
     expression: expression + newOperator,
     lastInput: newOperator,
     output: buildOutputForNewOperator(calc, expression, newOperator)
-  };
-}
-
-function invertNumber(calc) {
-  if (calc.lastInput === "=" && calc.output === "Error") return calc;
-  const invertedNumber = parseFloat(calc.currentOperand) * -1;
-  const strInvertedNumber = invertedNumber.toString();
-  return {
-    ...calc,
-    currentOperand: strInvertedNumber,
-    lastInput: INVERT_SYMBOL,
-    output: format(strInvertedNumber)
-  };
-}
-
-function calculatePercent(calc) {
-  if (calc.lastInput === "=" && calc.output === "Error") return calc;
-  const percentResult = parseFloat(calc.currentOperand) / 100;
-  const strPercentResult = percentResult.toString();
-  return {
-    ...calc,
-    currentOperand: strPercentResult,
-    lastInput: "%",
-    output: format(strPercentResult)
   };
 }
 
@@ -125,27 +146,6 @@ function getLastOperation(expression, currentOperand) {
   return (lastOperator)
     ? expression.substring(i) + currentOperand
     : "";
-}
-
-function allClear() {
-  return {
-    currentOperand: "0",
-    expression: "",
-    operator: undefined,
-    lastOperation: undefined,
-    lastInput: undefined,
-    output: "0"
-  };
-}
-
-function clear(calc) {
-  return {
-    ...calc,
-    currentOperand: "0",
-    lastOperation: undefined,
-    lastInput: "AC",
-    output: "0"
-  };
 }
 
 function buildOutputForNewOperator(calc, expression, newOperator) {
