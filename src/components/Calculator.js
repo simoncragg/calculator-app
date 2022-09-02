@@ -10,8 +10,9 @@ const Calculator = () => {
   const initialState = {
       currentOperand: "0",
       expression: "",
+      lastOperation: undefined,
+      lastInput: undefined,
       output: "0",
-      lastInput: undefined
   };
 
   const [calc, dispatch] = useReducer(calcReducer, initialState);

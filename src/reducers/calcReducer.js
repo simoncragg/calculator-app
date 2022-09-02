@@ -64,6 +64,7 @@ function updateExpression (calc, newOperator) {
     : calc.expression + calc.currentOperand;
 
   return {
+    ...calc,
     currentOperand: "",
     expression: expression + newOperator,
     lastInput: newOperator,
@@ -96,14 +97,34 @@ function calculatePercent(calc) {
 }
 
 function evaluateExpression (calc) {
+  if (calc.lastInput === "=") return repeatLastOperation(calc);
   const expression = calc.expression + calc.currentOperand;
   const result = evaluate(expression).toString();
+  const lastOperation = getLastOperation(calc.expression, calc.currentOperand);
   return {
+    ...calc,
     currentOperand: result,
     expression: "",
+    lastOperation,
     lastInput: "=",
     output: format(round(result))
   };
+}
+
+function repeatLastOperation(calc) {
+  const result = evaluate(calc.currentOperand + calc.lastOperation).toString();
+  return {
+    ...calc,
+    currentOperand: result,
+    output: format(round(result))
+  };
+}
+
+function getLastOperation(expression, currentOperand) {
+  const { lastOperator, i } = getLastOperator(expression);
+  return (lastOperator)
+    ? expression.substring(i) + currentOperand
+    : "";
 }
 
 function allClear() {
@@ -111,6 +132,7 @@ function allClear() {
     currentOperand: "0",
     expression: "",
     operator: undefined,
+    lastOperation: undefined,
     lastInput: undefined,
     output: "0"
   };
@@ -120,6 +142,7 @@ function clear(calc) {
   return {
     ...calc,
     currentOperand: "0",
+    lastOperation: undefined,
     lastInput: "AC",
     output: "0"
   };

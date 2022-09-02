@@ -124,6 +124,18 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
+test.each([
+  {inputs: "4+4====", expected: "20"},
+  {inputs: "20−4====", expected: "4"},
+  {inputs: "4×2====", expected: "64"},
+  {inputs: "64÷2====", expected: "4"},
+  {inputs: "5+5===÷4=", expected: "5"},
+])("can repeat last operation: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
 const pressButtons = (inputs) => {
   for (const input of inputs.split("")) {
     pressButton(input);
