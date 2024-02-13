@@ -1,4 +1,4 @@
-import { evaluate } from 'mathjs'
+import evaluate from '../evaluate';
 import { MAX_DIGITS, INVERT_SYMBOL } from '../constants';
 
 export const ActionTypes = {
