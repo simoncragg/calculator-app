@@ -2,9 +2,25 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [
-    react(), 
-  ],
+  build: {
+    rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+              return 'react';
+            }
+
+            if (id.includes('node_modules/mathjs')) {
+              return 'mathjs';
+            }
+
+            if (id.includes('node_modules')) {
+              return "vendor";
+            }
+          }
+        }
+    }
+},
   test: {
     globals: true,
     environment: 'jsdom',
@@ -13,6 +29,9 @@ export default defineConfig({
       exclude: ['node_modules/'],
     },
   },
+  plugins: [
+    react(), 
+  ],
   server: {
     open: true,
     port: 3000,
