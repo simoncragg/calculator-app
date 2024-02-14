@@ -1,4 +1,3 @@
-import React from "react"
 import {render, fireEvent, waitFor, screen} from "@testing-library/react"
 import "@testing-library/jest-dom"
 import Calculator from "./Calculator"
@@ -136,13 +135,13 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
-const pressButtons = (inputs) => {
+const pressButtons = (inputs: string) => {
   for (const input of inputs.split("")) {
     pressButton(input);
   }
 };
 
-const pressButton = (name) => {
+const pressButton = (name: string) => {
   const mappedName = name === "A"
     ? "AC"
     : name === "I"
@@ -152,7 +151,7 @@ const pressButton = (name) => {
   fireEvent.click(screen.getByRole("button", { name: mappedName }));
 };
 
-const assertOutputIsEqualTo = async (expected) => {
+const assertOutputIsEqualTo = async (expected: string) => {
   const outputEl = screen.getByTestId("output");
   await waitFor(() => outputEl);
   expect(outputEl).toHaveTextContent(expected);

@@ -5,14 +5,14 @@
   "private": true,
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "vitest watch",
     "test:no-watch": "vitest run",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "mathjs": "^11.1.0",
+    "mathjs": "^12.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -20,9 +20,12 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
     "c8": "^9.1.0",
     "jsdom": "^24.0.0",
+    "typescript": "^5.3.3",
     "vite": "^5.1.1",
     "vite-bundle-visualizer": "^1.0.1",
     "vitest": "^1.2.2",

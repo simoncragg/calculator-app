@@ -2,7 +2,7 @@ import { useReducer } from "react";
 import Screen from "./Screen";
 import Button from "./Button";
 import OperatorButton from "./OperatorButton";
-import { ActionTypes, calcReducer } from "../reducers/calcReducer";
+import calcReducer, { ActionTypes } from "../reducers/calcReducer";
 import { INVERT_SYMBOL } from "../constants";
 
 const Calculator = () => {
@@ -17,8 +17,9 @@ const Calculator = () => {
 
   const [calc, dispatch] = useReducer(calcReducer, initialState);
 
-  const handleClearButtonClick = (e) => {
-    const actionType = e.target.innerHTML === "AC"
+  const handleClearButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const { innerHTML } = e.target as HTMLButtonElement; 
+    const actionType = innerHTML === "AC"
       ? ActionTypes.ALL_CLEAR
       : ActionTypes.CLEAR;
     dispatch({ type: actionType });
@@ -32,12 +33,14 @@ const Calculator = () => {
     dispatch({ type: ActionTypes.CALCULATE_PERCENT });
   };
 
-  const handleDigitButtonClick = (e) => {
-    dispatch({ type: ActionTypes.UPDATE_CURRENT_OPERAND, payload: { digit: e.target.innerHTML }});
+  const handleDigitButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const { innerHTML } = e.target as HTMLButtonElement; 
+    dispatch({ type: ActionTypes.UPDATE_CURRENT_OPERAND, payload: { digit: innerHTML }});
   };
 
-  const handleOperatorButtonClick = (e) => {
-    dispatch({ type: ActionTypes.UPDATE_EXPRESSION, payload: { operator: e.target.getAttribute("data-operator") }});
+  const handleOperatorButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const operator = (e.target as HTMLButtonElement).getAttribute("data-operator")!;
+    dispatch({ type: ActionTypes.UPDATE_EXPRESSION, payload: { operator }});
   };
 
   const handleEqualsButtonClick = () => {

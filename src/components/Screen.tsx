@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-const Screen = ({ value }) => {
+interface ScreenProps {
+  value: string;
+}
+
+const Screen = ({ value }: ScreenProps) => {
 
   const [size, setSize] = useState("3xl");
 

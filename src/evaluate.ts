@@ -3,14 +3,16 @@ import {
     evaluateDependencies, 
     factory,
     unaryMinusDependencies,
-  } from 'mathjs/number'
+} from 'mathjs';
 
-const add = (a, b) => a + b;
-const subtract = (a, b) => a - b;
-const multiply = (a, b) => a * b;
-const divide = (a, b) => a / b;
+type OperationFunction = (a: number, b: number) => number;
 
-const createOperation = (operationName, operationFn) => factory(operationName, [], () => operationFn);
+const add = (a: number, b: number) => a + b;
+const subtract = (a: number, b: number) => a - b;
+const multiply = (a: number, b: number) => a * b;
+const divide = (a: number, b: number) => a / b;
+
+const createOperation = (name: string, fn: OperationFunction) => factory(name, [], () => fn);
 
 const { evaluate } = create({
   evaluateDependencies, 

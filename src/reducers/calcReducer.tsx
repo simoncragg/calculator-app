@@ -1,5 +1,16 @@
+import type {
+  CalcState,
+  Action,
+  UpdateCurrentOperandPayload,
+  UpdateExpressionPayload
+} from "../types";
+
 import evaluate from '../evaluate';
-import { MAX_DIGITS, INVERT_SYMBOL } from '../constants';
+
+import { 
+  MAX_DIGITS, 
+  INVERT_SYMBOL,
+} from '../constants';
 
 export const ActionTypes = {
   UPDATE_CURRENT_OPERAND: "UPDATE_CURRENT_OPERAND",
@@ -11,7 +22,7 @@ export const ActionTypes = {
   CLEAR: "CLEAR"
 };
 
-export function calcReducer(calc, action) {
+export default function calcReducer(calc: CalcState, action: Action) {
 
   switch (action.type) {
 
@@ -28,10 +39,12 @@ export function calcReducer(calc, action) {
       return calculatePercent(calc);
 
     case ActionTypes.UPDATE_CURRENT_OPERAND:
-      return updateCurrentOperand(calc, action.payload.digit);
+      const { digit } = action.payload as UpdateCurrentOperandPayload; 
+      return updateCurrentOperand(calc, digit);
 
     case ActionTypes.UPDATE_EXPRESSION:
-      return updateExpression(calc, action.payload.operator)
+      const { operator } = action.payload as UpdateExpressionPayload; 
+      return updateExpression(calc, operator);
 
     case ActionTypes.EVALUATE_EXPRESSION:
       return evaluateExpression(calc);
@@ -52,7 +65,7 @@ function allClear() {
   };
 }
 
-function clear(calc) {
+function clear(calc: CalcState) {
   return {
     ...calc,
     currentOperand: "0",
@@ -62,7 +75,7 @@ function clear(calc) {
   };
 }
 
-function invertNumber(calc) {
+function invertNumber(calc: CalcState) {
   if (calc.lastInput === "=" && calc.output === "Error") return calc;
   const invertedNumber = parseFloat(calc.currentOperand) * -1;
   const strInvertedNumber = invertedNumber.toString();
@@ -74,7 +87,7 @@ function invertNumber(calc) {
   };
 }
 
-function calculatePercent(calc) {
+function calculatePercent(calc: CalcState) {
   if (calc.lastInput === "=" && calc.output === "Error") return calc;
   const percentResult = parseFloat(calc.currentOperand) / 100;
   const strPercentResult = percentResult.toString();
@@ -86,7 +99,7 @@ function calculatePercent(calc) {
   };
 }
 
-function updateCurrentOperand (calc, digit) {
+function updateCurrentOperand (calc: CalcState, digit: string) {
   if (calc.currentOperand.replace(".", "").length >= MAX_DIGITS) return calc;
   if (digit === "." && calc.currentOperand.includes(".")) return calc;
   
@@ -101,7 +114,7 @@ function updateCurrentOperand (calc, digit) {
   };
 }
 
-function updateExpression (calc, newOperator) {
+function updateExpression (calc: CalcState, newOperator: string) {
   if (newOperator === calc.lastInput) return calc;
 
   const expression = isOperator(calc.lastInput)
@@ -117,7 +130,7 @@ function updateExpression (calc, newOperator) {
   };
 }
 
-function evaluateExpression (calc) {
+function evaluateExpression (calc: CalcState) {
   if (calc.lastInput === "=") return repeatLastOperation(calc);
   const expression = calc.expression + calc.currentOperand;
   const result = evaluate(expression).toString();
@@ -132,7 +145,7 @@ function evaluateExpression (calc) {
   };
 }
 
-function repeatLastOperation(calc) {
+function repeatLastOperation(calc: CalcState) {
   const result = evaluate(calc.currentOperand + calc.lastOperation).toString();
   return {
     ...calc,
@@ -141,14 +154,14 @@ function repeatLastOperation(calc) {
   };
 }
 
-function getLastOperation(expression, currentOperand) {
+function getLastOperation(expression: string, currentOperand: string) {
   const { lastOperator, i } = getLastOperator(expression);
   return (lastOperator)
     ? expression.substring(i) + currentOperand
     : "";
 }
 
-function buildOutputForNewOperator(calc, expression, newOperator) {
+function buildOutputForNewOperator(calc: CalcState, expression: string, newOperator: string) {
   const evaluationIndex = getEvaluationIndex(expression, newOperator);
   if (evaluationIndex > -1) {
     const evaluation = evaluate(expression.substring(evaluationIndex));
@@ -157,7 +170,7 @@ function buildOutputForNewOperator(calc, expression, newOperator) {
   return calc.currentOperand;
 }
 
-function getEvaluationIndex(expression, newOperator) {
+function getEvaluationIndex(expression: string, newOperator: string) {
   const {lastOperator, i} = getLastOperator(expression);
   if (!lastOperator) return -1;
   if (isDivideOrMultiply(lastOperator) && isDivideOrMultiply(newOperator)) return i-1;
@@ -165,7 +178,7 @@ function getEvaluationIndex(expression, newOperator) {
   return -1;
 }
 
-function getLastOperator(expression) {
+function getLastOperator(expression: string) {
   for (let i = expression.length - 1; i > -1; i--) {
     if (isOperator(expression[i])) {
       return {lastOperator: expression[i], i};
@@ -174,19 +187,19 @@ function getLastOperator(expression) {
   return {undefined, i: -1};
 }
 
-function isOperator(candidate) {
-  return "/*-+".includes(candidate);
+function isOperator(candidate: string | undefined) {
+  return candidate && "/*-+".includes(candidate);
 }
 
-function isAddOrSubtract(operator) {
+function isAddOrSubtract(operator: string) {
   return "+-".indexOf(operator) > -1;
 }
 
-function isDivideOrMultiply(operator) {
+function isDivideOrMultiply(operator: string) {
   return "/*".indexOf(operator) > -1;
 }
 
-function format(strNumber) {
+function format(strNumber: string) {
   if (isInfinity(strNumber)) return "Error";
   const numberParts = strNumber.split(".");
   const integerPart = parseInt(numberParts[0]).toLocaleString("en", { maximumFractionDigits: 0});
@@ -196,17 +209,17 @@ function format(strNumber) {
     : integerPart;
 }
 
-function round(number) {
+function round(number: string) {
   if (isInfinity(number)) return number;
   const strNumber = number.toString();
-  const floatNumber = parseFloat(number);
+  const floatNumber = parseFloat(strNumber);
   const fractionalDigits = computeFixedPointFractionDigits(strNumber)
   const fixedNumber = floatNumber.toFixed(fractionalDigits);
   const fixedNumberWithNoTrailingZeros = parseFloat(fixedNumber).toString();
   return fixedNumberWithNoTrailingZeros;
 }
 
-function computeFixedPointFractionDigits(strNumber) {
+function computeFixedPointFractionDigits(strNumber: string) {
   const numberParts = strNumber.split(".");
   if (numberParts.length < 2) return 0;
   const integerPart = numberParts[0];
@@ -214,6 +227,6 @@ function computeFixedPointFractionDigits(strNumber) {
   return MAX_DIGITS - numOfIntegerDigits;
 }
 
-function isInfinity (number) {
+function isInfinity (number: string) {
   return number === "Infinity";
 }
