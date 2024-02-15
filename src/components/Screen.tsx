@@ -4,39 +4,36 @@ interface ScreenProps {
   value: string;
 }
 
-const Screen = ({ value }: ScreenProps) => {
+const fontSizeLookup: { [key: number]: string } = {
+  6: "86px",
+  7: "70px",
+  8: "64px",
+  9: "56px",
+  10: "48px",
+  12: "42px",
+  13: "38px",
+  14: "34px",
+  99: "31px",
+};
 
-  const [size, setSize] = useState("3xl");
+const Screen = ({ value }: ScreenProps) => {
+  const [size, setSize] = useState<string>("86px");
 
   useEffect(() => {
     if (value) {
-      const len = value
-        .split("")
-        .filter(x => x !== ",")
-        .length;
-
-      setSize(len > 14 
-        ? "3xs"
-        : len > 13
-          ? "2xs" 
-          : len > 12
-            ? "xs"
-            : len > 10
-              ? "sm"
-              : len > 9
-                ? "md"
-                : len > 8
-                  ? "lg"
-                  : len > 7
-                    ? "xl"
-                    : len > 6
-                      ? "2xl"
-                      : "3xl");
+      const len = value.split("").filter(x => x !== ",").length;     
+      const key = Object.keys(fontSizeLookup).find(key => len < Number(key));
+      const fontSize = key ? fontSizeLookup[Number(key)] : fontSizeLookup[99];
+      setSize(fontSize);
     }
   }, [value]);
 
   return (
-    <div data-testid="output" className={`screen screen-${size}`}>
+    <div 
+      data-testid="output" 
+      className={`flex w-full h-24 items-center justify-end mb-2.5 text-white py-0 px-3.5 bg-black`}
+      style={{ fontSize: `${size}`}}
+    >
       {value}
     </div>
   );

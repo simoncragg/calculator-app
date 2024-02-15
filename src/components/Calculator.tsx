@@ -48,11 +48,9 @@ const Calculator = () => {
   };
 
   return (
-    //console.log(calc),
-    <>
-      <div className="calculator">
+    <div className="calculator">
         <Screen value={calc.output} />
-        <div className="buttonBox">
+        <div className="w-full h-[80%] grid grid-cols-4 grid-rows-5 gap-2.5">
           <Button className="fn" onClick={handleClearButtonClick}>{calc.output === "0" ? "AC" : "C"}</Button>
           <Button className="fn" onClick={handleInvertNumberButtonClick}>{INVERT_SYMBOL}</Button>
           <Button className="fn" onClick={handleCalculatePercentButtonClick}>%</Button>
@@ -69,12 +67,11 @@ const Calculator = () => {
           <Button onClick={handleDigitButtonClick}>2</Button>
           <Button onClick={handleDigitButtonClick}>3</Button>
           <OperatorButton op="+" lastInput={calc.lastInput} onClick={handleOperatorButtonClick}>+</OperatorButton>
-          <Button className="span-two" onClick={handleDigitButtonClick}>0</Button>
+          <Button className="col-span-2 text-left pl-8" onClick={handleDigitButtonClick}>0</Button>
           <Button onClick={handleDigitButtonClick}>.</Button>
           <Button onClick={handleEqualsButtonClick} className="sign">=</Button>
         </div>
       </div>
-    </>
   );
 };
 

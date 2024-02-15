@@ -1,141 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap");
 
-* {
-  margin: 0;
-  padding: 0;
-  font-family: "Open Sans", sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #eeeeee;
-}
+@layer components {
+  .calculator {
+    @apply w-[370px] h-[640px] pt-14 pb-10 px-4 rounded-xl bg-black shadow-none md:shadow-custom;
+  }
 
-.calculator {
-  width: 340px;
-  height: 540px;
-  padding: 60px 15px 40px 15px;
-  border-radius: 10px;
-  background-color: #000000;
-  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 50%), 0 6px 20px 0 rgb(0 0 0 / 50%); 
-}
+  button, [type='button'] {
+    @apply bg-charcoal opacity-100 text-3xl text-white font-bold cursor-pointer rounded-full border-0 outline-0 hover:bg-charcoal-dark active:bg-charcoal-light;
+  }
 
-.screen {
-  width: 100%;
-  height: 100px;
-  margin-bottom: 10px;
-  padding: 0 15px;
-  background-color: #000000;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  color: white;
-  box-sizing: border-box;
-  font-size: 86px;
-}
+  button.fn {
+    @apply text-charcoal-dark bg-gray hover:bg-gray-dark active:bg-gray-light;
+  }
 
-.screen-3xs {
-  font-size: 31px;
-}
-
-.screen-2xs {
-  font-size: 34px;
-}
-
-.screen-xs {
-  font-size: 38px;
-}
-
-.screen-sm {
-  font-size: 42px;
-}
-
-.screen-md {
-  font-size: 48px;
-}
-
-.screen-lg {
-  font-size: 56px;
-}
-
-.screen-xl {
-  font-size: 64px
-}
-
-.screen-2xl {
-  font-size: 70px
-}
-
-.screen-3xl {
-  font-size: 86px
-}
-
-.buttonBox {
-  width: 100%;
-  height: calc(100% - 110px);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  grid-gap: 10px;
-}
-
-button {
-  border: none;
-  background-color: #333333;
-  font-size: 30px;
-  color: rgb(255, 255, 255);
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 48px;
-  outline: none;
-}
-
-button:hover {
-  background-color: #292929;
-}
-
-button:active {
-  background-color: #404040;
-}
-
-button.fn {
-  color: #1C1C1C;
-  background-color: #D4D4D2;
-}
-
-button.fn:hover {
-  background-color: #ABABA7;
-}
-
-button.fn:active {
-  background-color: #F2F2F2;
-}
-
-button.sign {
-  background-color: #FF9500;
-  font-size: 40px;
-}
-
-button.sign:hover {
-  background-color: #CC7700;
-}
-
-button.sign:active {
-  background-color: #FFB040;
-}
-
-button.sign:disabled {
-  color: #FF9500;
-  background-color: #FFFFFF;
-  font-size: 40px;
-}
-
-.span-two {
-  grid-column: 1 / 3;
-  text-align: left;
-  padding-left: 32px;
+  button.sign {
+    @apply text-4xl bg-orange hover:bg-orange-dark active:bg-orange-light disabled:bg-white disabled:text-orange;
+  }
 }
