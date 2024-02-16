@@ -9,9 +9,9 @@ test("displays zero on start up", async () => {
 });
 
 test.each([
-  {inputs: "12345678901234567", expected: "1,234,567,890,123,456"},
-  {inputs: "1.2345678901234567", expected: "1.234567890123456"}
-])("operand cannot exceed 16 digits: $inputs [$expected]", async ({inputs, expected}) => {
+  {inputs: "123456789", expected: "123,456,789"},
+  {inputs: "1.23456789", expected: "1.23456789"}
+])("operand cannot exceed 9 digits: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
@@ -44,7 +44,7 @@ test.each([
   {inputs: "1+1=", expected: "2"},
   {inputs: "0.1+0.1=", expected: "0.2"},
   {inputs: ".01+0.01=", expected: "0.02"},
-  {inputs: "32768.16384812902+16384.08192406451=", expected: "49,152.24577219354"},
+  {inputs: "32768.1638+16384.0819=", expected: "49,152.2457"},
   {inputs: "99+1=", expected: "100"},
   {inputs: "1−1=", expected: "0"},
   {inputs: ".01−.001=", expected: "0.009"},
@@ -135,6 +135,23 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
+test.each([
+  {inputs: "999999999+1=", expected: "1e9"},
+  {inputs: "999999999+2=", expected: "1e9"},
+  {inputs: "0.00000001÷100=", expected: "1e-10"},  
+])("can display low precision scientific notation for answers longer than MAX_DIGITS: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
+test("it uses fixed-point notation when digit length does not exceed MAX_DIGITS", async () => {
+  render(<Calculator />);
+  pressButtons("0.00000001÷100×100=");
+  await assertOutputIsEqualTo("0.00000001");
+  await assertOutputIsNotEqualTo("1e-8");
+});
+
 const pressButtons = (inputs: string) => {
   for (const input of inputs.split("")) {
     pressButton(input);
@@ -155,4 +172,10 @@ const assertOutputIsEqualTo = async (expected: string) => {
   const outputEl = screen.getByTestId("output");
   await waitFor(() => outputEl);
   expect(outputEl).toHaveTextContent(expected);
+};
+
+const assertOutputIsNotEqualTo = async (expected: string) => {
+  const outputEl = screen.getByTestId("output");
+  await waitFor(() => outputEl);
+  expect(outputEl).not.toHaveTextContent(expected);
 };

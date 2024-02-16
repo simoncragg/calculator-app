@@ -4,20 +4,18 @@ interface ScreenProps {
   value: string;
 }
 
+const initialSize = "86px";
+
 const fontSizeLookup: { [key: number]: string } = {
-  6: "86px",
-  7: "70px",
-  8: "64px",
-  9: "56px",
-  10: "48px",
-  12: "42px",
-  13: "38px",
-  14: "34px",
-  99: "31px",
+  6: initialSize,
+  7: "84px",
+  8: "70px",
+  9: "62px",
+  99: "56px"
 };
 
 const Screen = ({ value }: ScreenProps) => {
-  const [size, setSize] = useState<string>("86px");
+  const [size, setSize] = useState<string>(initialSize);
 
   useEffect(() => {
     if (value) {

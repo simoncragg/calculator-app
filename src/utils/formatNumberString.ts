@@ -17,8 +17,24 @@ export default function format(numberString: string, { maxDigits, useRounding }:
   return formatNumberString(strNumber, { maxDigits });
 };
 
+function isInfinity (number: string) {
+  return number === "Infinity";
+}
+
 function formatNumberString(strNumber: string, { maxDigits }: FormattingOptions) {
   const parsedNumber = parseFloat(strNumber);
+
+  if (isExponentialNotation(strNumber)) {
+    const fixedNumber = convertToFixedNotation(parsedNumber);
+    if (exceedsMaxDigits(fixedNumber, MAX_DIGITS)) {
+      return strNumber;
+    }
+  }
+
+  if (exceedsMaxDigits(strNumber, maxDigits)) {
+    return parsedNumber.toExponential(0).replace("+", "");
+  }
+
   const fractionalDigits = strNumber.split(".")[1]?.length ?? 0;
   const suffix = strNumber.endsWith(".") ? "." : "";
 
@@ -29,8 +45,20 @@ function formatNumberString(strNumber: string, { maxDigits }: FormattingOptions)
   ) + suffix;
 }
 
+function isExponentialNotation(strNumber: string) {
+  return strNumber.includes("e");
+}
+
+function convertToFixedNotation(number: number) {
+  return formatNumber(number, { notation: 'fixed' });
+}
+
+function exceedsMaxDigits(strNumber: string, maxDigits: number) {
+  return strNumber.replace(".", "").length > maxDigits;
+}
+
 function roundWithMaxDigits(strNumber: string, maxDigits: number) {
-  if (isInfinity(strNumber)) return strNumber;
+  if (isExponentialNotation(strNumber)) return strNumber;
   const floatNumber = parseFloat(strNumber);
   const fractionalDigits = computeFractionalDigits(strNumber, maxDigits)
   const fixedNumber = floatNumber.toFixed(fractionalDigits);
@@ -44,8 +72,4 @@ function computeFractionalDigits(strNumber: string, maxDigits: number) {
   const integerPart = numberParts[0];
   const numOfIntegerDigits = integerPart.replace("-", "").length;
   return maxDigits - numOfIntegerDigits;
-}
-
-function isInfinity (number: string) {
-  return number === "Infinity";
 }
