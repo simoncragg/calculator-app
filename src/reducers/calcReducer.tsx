@@ -6,6 +6,7 @@ import type {
 } from "../types";
 
 import evaluate from '../evaluate';
+import formatNumberString from "../utils/formatNumberString";
 
 import { 
   MAX_DIGITS, 
@@ -83,7 +84,7 @@ function invertNumber(calc: CalcState) {
     ...calc,
     currentOperand: strInvertedNumber,
     lastInput: INVERT_SYMBOL,
-    output: format(strInvertedNumber)
+    output: formatNumberString(strInvertedNumber, { maxDigits: MAX_DIGITS })
   };
 }
 
@@ -95,22 +96,22 @@ function calculatePercent(calc: CalcState) {
     ...calc,
     currentOperand: strPercentResult,
     lastInput: "%",
-    output: format(strPercentResult)
+    output: formatNumberString(strPercentResult, { maxDigits: MAX_DIGITS })
   };
 }
 
 function updateCurrentOperand (calc: CalcState, digit: string) {
-  if (calc.currentOperand.replace(".", "").length >= MAX_DIGITS) return calc;
+  if (calc.currentOperand.replace(".", "").length === MAX_DIGITS) return calc;
   if (digit === "." && calc.currentOperand.includes(".")) return calc;
   
-  const isFirstDigit = (calc.currentOperand === "0" && digit !== ".") || calc.lastInput === "=";
-  const currentOperand = (isFirstDigit) ? digit : calc.currentOperand + digit;
+  const isFirstDigit = calc.currentOperand === "0" && digit !== "." || calc.lastInput === "=";
+  const currentOperand = isFirstDigit ? digit : calc.currentOperand + digit;
 
   return {
     ...calc,
     currentOperand,
     lastInput: digit,
-    output: format(currentOperand)
+    output: formatNumberString(currentOperand, { maxDigits: MAX_DIGITS })
   };
 }
 
@@ -141,7 +142,7 @@ function evaluateExpression (calc: CalcState) {
     expression: "",
     lastOperation,
     lastInput: "=",
-    output: format(round(result))
+    output: formatNumberString(result, { maxDigits: MAX_DIGITS, roundToMaxDigits: true })
   };
 }
 
@@ -150,7 +151,7 @@ function repeatLastOperation(calc: CalcState) {
   return {
     ...calc,
     currentOperand: result,
-    output: format(round(result))
+    output: formatNumberString(result, { maxDigits: MAX_DIGITS, roundToMaxDigits: true })
   };
 }
 
@@ -165,9 +166,9 @@ function buildOutputForNewOperator(calc: CalcState, expression: string, newOpera
   const evaluationIndex = getEvaluationIndex(expression, newOperator);
   if (evaluationIndex > -1) {
     const evaluation = evaluate(expression.substring(evaluationIndex));
-    return format(round(evaluation).toString());
+    return formatNumberString(evaluation.toString(), { maxDigits: MAX_DIGITS });
   }
-  return calc.currentOperand;
+  return formatNumberString(calc.currentOperand, { maxDigits: MAX_DIGITS });
 }
 
 function getEvaluationIndex(expression: string, newOperator: string) {
@@ -197,36 +198,4 @@ function isAddOrSubtract(operator: string) {
 
 function isDivideOrMultiply(operator: string) {
   return "/*".indexOf(operator) > -1;
-}
-
-function format(strNumber: string) {
-  if (isInfinity(strNumber)) return "Error";
-  const numberParts = strNumber.split(".");
-  const integerPart = parseInt(numberParts[0]).toLocaleString("en", { maximumFractionDigits: 0});
-  const fractionalPart = numberParts.length > 1 ? numberParts[1] : "";
-  return (strNumber.includes(".")) 
-    ? `${integerPart}.${fractionalPart}`
-    : integerPart;
-}
-
-function round(number: string) {
-  if (isInfinity(number)) return number;
-  const strNumber = number.toString();
-  const floatNumber = parseFloat(strNumber);
-  const fractionalDigits = computeFixedPointFractionDigits(strNumber)
-  const fixedNumber = floatNumber.toFixed(fractionalDigits);
-  const fixedNumberWithNoTrailingZeros = parseFloat(fixedNumber).toString();
-  return fixedNumberWithNoTrailingZeros;
-}
-
-function computeFixedPointFractionDigits(strNumber: string) {
-  const numberParts = strNumber.split(".");
-  if (numberParts.length < 2) return 0;
-  const integerPart = numberParts[0];
-  const numOfIntegerDigits = integerPart.replace("-", "").length;
-  return MAX_DIGITS - numOfIntegerDigits;
-}
-
-function isInfinity (number: string) {
-  return number === "Infinity";
 }
