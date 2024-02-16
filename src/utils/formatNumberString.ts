@@ -1,13 +1,16 @@
+import { format as formatNumber } from "mathjs";
+import { MAX_DIGITS } from "../constants";
+
 interface FormattingOptions {
   maxDigits: number;
-  roundToMaxDigits?: boolean;  
+  useRounding?: boolean; 
 }
 
-export default (numberString: string, { maxDigits, roundToMaxDigits }: FormattingOptions) => {
+export default function format(numberString: string, { maxDigits, useRounding }: FormattingOptions) {
   if (isInfinity(numberString)) return "Error";
   if (numberString === ".") return "0.";
-  
-  const strNumber = (roundToMaxDigits)
+
+  const strNumber = useRounding
       ? roundWithMaxDigits(numberString, maxDigits)
       : numberString;
 
@@ -29,13 +32,13 @@ function formatNumberString(strNumber: string, { maxDigits }: FormattingOptions)
 function roundWithMaxDigits(strNumber: string, maxDigits: number) {
   if (isInfinity(strNumber)) return strNumber;
   const floatNumber = parseFloat(strNumber);
-  const fractionalDigits = computeFixedPointFractionalDigits(strNumber, maxDigits)
+  const fractionalDigits = computeFractionalDigits(strNumber, maxDigits)
   const fixedNumber = floatNumber.toFixed(fractionalDigits);
   const fixedNumberWithNoTrailingZeros = parseFloat(fixedNumber).toString();
   return fixedNumberWithNoTrailingZeros;
 }
 
-function computeFixedPointFractionalDigits(strNumber: string, maxDigits: number) {
+function computeFractionalDigits(strNumber: string, maxDigits: number) {
   const numberParts = strNumber.split(".");
   if (numberParts.length < 2) return 0;
   const integerPart = numberParts[0];

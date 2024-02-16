@@ -142,7 +142,7 @@ function evaluateExpression (calc: CalcState) {
     expression: "",
     lastOperation,
     lastInput: "=",
-    output: formatNumberString(result, { maxDigits: MAX_DIGITS, roundToMaxDigits: true })
+    output: formatNumberString(result, { maxDigits: MAX_DIGITS, useRounding: true })
   };
 }
 
@@ -151,7 +151,7 @@ function repeatLastOperation(calc: CalcState) {
   return {
     ...calc,
     currentOperand: result,
-    output: formatNumberString(result, { maxDigits: MAX_DIGITS, roundToMaxDigits: true })
+    output: formatNumberString(result, { maxDigits: MAX_DIGITS, useRounding: true })
   };
 }
 
