@@ -2,8 +2,8 @@ import { useReducer } from "react";
 import Screen from "./Screen";
 import Button from "./Button";
 import OperatorButton from "./OperatorButton";
-import calcReducer, { ActionTypes } from "../reducers/calcReducer";
-import { INVERT_SYMBOL } from "../constants";
+import calcReducer from "../reducers/calcReducer";
+import { ActionTypes, INVERT_SYMBOL } from "../constants";
 
 const Calculator = () => {
   

@@ -7,21 +7,7 @@ import type {
 
 import evaluate from '../utils/evaluate';
 import formatNumberString from "../utils/formatNumberString";
-
-import { 
-  MAX_DIGITS, 
-  INVERT_SYMBOL,
-} from '../constants';
-
-export const ActionTypes = {
-  UPDATE_CURRENT_OPERAND: "UPDATE_CURRENT_OPERAND",
-  UPDATE_EXPRESSION: "UPDATE_EXPRESSION",
-  EVALUATE_EXPRESSION: "EVALUATE_EXPRESSION",
-  INVERT_NUMBER: "INVERT_NUMBER",
-  CALCULATE_PERCENT: "PERCENT",
-  ALL_CLEAR: "ALL_CLEAR",
-  CLEAR: "CLEAR"
-};
+import { ActionTypes, INVERT_SYMBOL, MAX_DIGITS } from '../constants';
 
 export default function calcReducer(calc: CalcState, action: Action) {
 
