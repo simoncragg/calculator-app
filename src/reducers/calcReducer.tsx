@@ -5,7 +5,7 @@ import type {
   UpdateExpressionPayload
 } from "../types";
 
-import evaluate from '../evaluate';
+import evaluate from '../utils/evaluate';
 import formatNumberString from "../utils/formatNumberString";
 
 import { 
