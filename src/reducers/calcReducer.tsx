@@ -1,6 +1,6 @@
 import type {
-  CalcState,
   Action,
+  CalcState,
   UpdateCurrentOperandPayload,
   UpdateExpressionPayload
 } from "../types";
