@@ -27,7 +27,7 @@ function formatNumberString(strNumber: string, { maxDigits }: FormattingOptions)
   if (isExponentialNotation(strNumber)) {
     const fixedNumber = convertToFixedNotation(parsedNumber);
     if (exceedsMaxDigits(fixedNumber, MAX_DIGITS)) {
-      return strNumber;
+      return parsedNumber.toExponential(0);
     }
   }
 

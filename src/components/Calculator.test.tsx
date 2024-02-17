@@ -138,18 +138,21 @@ test.each([
 test.each([
   {inputs: "999999999+1=", expected: "1e9"},
   {inputs: "999999999+2=", expected: "1e9"},
-  {inputs: "0.00000001÷100=", expected: "1e-10"},  
-])("can display low precision scientific notation for answers longer than MAX_DIGITS: $inputs [$expected]", async ({inputs, expected}) => {
+  {inputs: "0.00000001÷100=", expected: "1e-10"},
+  {inputs: "0.00000001÷100×1000=", expected: "1e-7"}, 
+])("can display longer numbers using low precision exponential notation: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
 });
 
-test("it uses fixed-point notation when digit length does not exceed MAX_DIGITS", async () => {
+test.each([
+  {inputs: "0.00000001÷100×100=", expected: "0.00000001"},
+  {inputs: "0.00000001÷10×10=", expected: "0.00000001"},
+])("can display exponential results using fixed-point notation when short enough: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
-  pressButtons("0.00000001÷100×100=");
-  await assertOutputIsEqualTo("0.00000001");
-  await assertOutputIsNotEqualTo("1e-8");
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
 });
 
 const pressButtons = (inputs: string) => {
@@ -172,10 +175,4 @@ const assertOutputIsEqualTo = async (expected: string) => {
   const outputEl = screen.getByTestId("output");
   await waitFor(() => outputEl);
   expect(outputEl).toHaveTextContent(expected);
-};
-
-const assertOutputIsNotEqualTo = async (expected: string) => {
-  const outputEl = screen.getByTestId("output");
-  await waitFor(() => outputEl);
-  expect(outputEl).not.toHaveTextContent(expected);
 };
