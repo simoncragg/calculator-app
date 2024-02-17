@@ -20,3 +20,8 @@ export interface UpdateCurrentOperandPayload {
 export interface UpdateExpressionPayload {
   operator: string;
 }
+
+export interface GetLastOperatorResultType {
+  lastOperator: string | undefined,
+  index: number
+};

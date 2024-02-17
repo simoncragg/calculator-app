@@ -1,6 +1,7 @@
 import type {
   Action,
   CalcState,
+  GetLastOperatorResultType,
   UpdateCurrentOperandPayload,
   UpdateExpressionPayload
 } from "../types";
@@ -9,7 +10,7 @@ import evaluate from '../utils/evaluate';
 import formatNumberString from "../utils/formatNumberString";
 import { ActionTypes, INVERT_SYMBOL, MAX_DIGITS } from '../constants';
 
-export default function calcReducer(calc: CalcState, action: Action) {
+export default function calcReducer(calc: CalcState, action: Action): CalcState {
 
   switch (action.type) {
 
@@ -41,7 +42,7 @@ export default function calcReducer(calc: CalcState, action: Action) {
   }
 }
 
-function allClear() {
+function allClear(): CalcState {
   return {
     currentOperand: "0",
     expression: "",
@@ -53,7 +54,7 @@ function allClear() {
   };
 }
 
-function clear(calc: CalcState) {
+function clear(calc: CalcState): CalcState {
   return {
     ...calc,
     currentOperand: "0",
@@ -64,7 +65,7 @@ function clear(calc: CalcState) {
   };
 }
 
-function invertNumber(calc: CalcState) {
+function invertNumber(calc: CalcState): CalcState {
   if (calc.lastInput === "=" && calc.output === "Error") return calc;
 
   const invertedNumber = parseFloat(calc.currentOperand) * -1;
@@ -79,7 +80,7 @@ function invertNumber(calc: CalcState) {
   };
 }
 
-function calculatePercent(calc: CalcState) {
+function calculatePercent(calc: CalcState): CalcState {
   if (calc.lastInput === "=" && calc.output === "Error") return calc;
 
   const percentResult = parseFloat(calc.currentOperand) / 100;
@@ -94,7 +95,7 @@ function calculatePercent(calc: CalcState) {
   };
 }
 
-function updateCurrentOperand (calc: CalcState, digit: string) {
+function updateCurrentOperand (calc: CalcState, digit: string): CalcState {
   if (calc.currentOperand.replace(".", "").length === MAX_DIGITS) return calc;
   if (digit === "." && calc.currentOperand.includes(".")) return calc;
 
@@ -133,7 +134,7 @@ function updateExpression (calc: CalcState, newOperator: string): CalcState {
   };
 }
 
-function evaluateExpression (calc: CalcState) {
+function evaluateExpression (calc: CalcState): CalcState {
   if (calc.lastInput === "=") return repeatLastOperation(calc);
 
   const expression = calc.expression + calc.currentOperand;
@@ -151,7 +152,7 @@ function evaluateExpression (calc: CalcState) {
   };
 }
 
-function repeatLastOperation(calc: CalcState) {
+function repeatLastOperation(calc: CalcState): CalcState {
   const result = evaluate(calc.currentOperand + calc.lastOperation).toString();
   const output = formatNumberString(result, { maxDigits: MAX_DIGITS, useRounding: true });
 
@@ -162,16 +163,16 @@ function repeatLastOperation(calc: CalcState) {
   };
 }
 
-function getLastOperation(expression: string, currentOperand: string) {
-  const { lastOperator, i } = getLastOperator(expression);
-  const lastOperation = (lastOperator)
-    ? expression.substring(i) + currentOperand
+function getLastOperation(expression: string, currentOperand: string): string {
+  const { lastOperator, index } = getLastOperator(expression);
+  const lastOperation = lastOperator
+    ? expression.substring(index) + currentOperand
     : "";
 
   return lastOperation;
 }
 
-function buildOutputForNewOperator(operand: string, expression: string, newOperator: string) {
+function buildOutputForNewOperator(operand: string, expression: string, newOperator: string): string {
   const evaluationIndex = getEvaluationIndex(expression, newOperator);
   if (evaluationIndex > -1) {
     const evaluation = evaluate(expression.substring(evaluationIndex));
@@ -181,34 +182,39 @@ function buildOutputForNewOperator(operand: string, expression: string, newOpera
   return formatNumberString(operand, { maxDigits: MAX_DIGITS });
 }
 
-function getEvaluationIndex(expression: string, newOperator: string) {
-  const {lastOperator, i} = getLastOperator(expression);
+function getEvaluationIndex(expression: string, newOperator: string): number {
+  const {lastOperator, index } = getLastOperator(expression);
 
   if (!lastOperator) return -1;
-  if (isDivideOrMultiply(lastOperator) && isDivideOrMultiply(newOperator)) return i-1;
+  if (isDivideOrMultiply(lastOperator) && isDivideOrMultiply(newOperator)) return index-1;
   if (isAddOrSubtract(lastOperator) && isAddOrSubtract(newOperator)) return 0;
 
   return -1;
 }
 
-function getLastOperator(expression: string) {
+function getLastOperator(expression: string): GetLastOperatorResultType {
   for (let i = expression.length - 1; i > -1; i--) {
     if (isOperator(expression[i])) {
-      return {lastOperator: expression[i], i};
+      return { lastOperator: expression[i], index: i };
     }
   }
   
-  return {undefined, i: -1};
+  return { 
+    lastOperator: undefined,
+    index: -1
+  };
+}
+ 
+function isOperator(candidate: string | undefined): boolean {
+  return candidate 
+    ? "/*-+".includes(candidate)
+    : false;
 }
 
-function isOperator(candidate: string | undefined) {
-  return candidate && "/*-+".includes(candidate);
-}
-
-function isAddOrSubtract(operator: string) {
+function isAddOrSubtract(operator: string): boolean {
   return "+-".indexOf(operator) > -1;
 }
 
-function isDivideOrMultiply(operator: string) {
+function isDivideOrMultiply(operator: string): boolean {
   return "/*".indexOf(operator) > -1;
 }

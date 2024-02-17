@@ -5,8 +5,7 @@ interface FormattingOptions {
   useRounding?: boolean;
 }
 
-export default (numberString: string, { maxDigits, useRounding } : FormattingOptions) => {
-
+export default (numberString: string, { maxDigits, useRounding }: FormattingOptions): string => {
   if (isInfinity(numberString)) return "Error";
   if (numberString === ".") return "0.";
 
@@ -17,11 +16,11 @@ export default (numberString: string, { maxDigits, useRounding } : FormattingOpt
   return formatNumber(strNumber, maxDigits);
 };
 
-function isInfinity (number: string) {
+function isInfinity (number: string): boolean {
   return number === "Infinity";
 }
 
-function formatNumber(strNumber: string, maxDigits: number) {
+function formatNumber(strNumber: string, maxDigits: number): string {
   const parsedNumber = parseFloat(strNumber);
 
   if (isExponentialNotation(strNumber)) {
@@ -39,7 +38,7 @@ function formatNumber(strNumber: string, maxDigits: number) {
   return formatFixedPointNumber(strNumber, parsedNumber);
 }
 
-function formatFixedPointNumber(strNumber: string, parsedNumber: number) {
+function formatFixedPointNumber(strNumber: string, parsedNumber: number): string {
   const fractionalDigits = strNumber.split(".")[1]?.length ?? 0;
   const suffix = strNumber.endsWith(".") ? "." : "";
 
@@ -50,30 +49,30 @@ function formatFixedPointNumber(strNumber: string, parsedNumber: number) {
   ) + suffix;
 }
 
-function isExponentialNotation(strNumber: string) {
+function isExponentialNotation(strNumber: string): boolean {
   return strNumber.includes("e");
 }
 
-function convertToFixedNotation(number: number) {
-  return format(number, { notation: 'fixed' });
-}
-
-function exceedsMaxDigits(strNumber: string, maxDigits: number) {
+function exceedsMaxDigits(strNumber: string, maxDigits: number): boolean {
   return strNumber.replace(".", "").length > maxDigits;
 }
 
-function trimTrailingFractionalZeros(strNumber: string) {
+function convertToFixedNotation(number: number): string {
+  return format(number, { notation: 'fixed' });
+}
+
+function trimTrailingFractionalZeros(strNumber: string): string {
   return strNumber.replace(/(\.\d*?[1-9])0*$/, "$1");
 }
 
-function roundToMaximalPrecision(strNumber: string, maxDigits: number) {
+function roundToMaximalPrecision(strNumber: string, maxDigits: number): string {
   if (isExponentialNotation(strNumber)) return strNumber;
   const floatNumber = parseFloat(strNumber);
   const fractionalDigits = computeAvailableFractionalDigits(strNumber, maxDigits)
   return floatNumber.toFixed(fractionalDigits);
 }
 
-function computeAvailableFractionalDigits(strNumber: string, maxDigits: number) {
+function computeAvailableFractionalDigits(strNumber: string, maxDigits: number): number {
   const numberParts = strNumber.split(".");
   if (numberParts.length < 2) return 0;
   const integerPart = numberParts[0];
