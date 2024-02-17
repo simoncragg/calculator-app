@@ -1,40 +1,45 @@
-import { format as formatNumber } from "mathjs";
-import { MAX_DIGITS } from "../constants";
+import { format } from "mathjs";
 
 interface FormattingOptions {
   maxDigits: number;
-  useRounding?: boolean; 
+  useRounding?: boolean;
 }
 
-export default function format(numberString: string, { maxDigits, useRounding }: FormattingOptions) {
+export default (numberString: string, { maxDigits, useRounding } : FormattingOptions) => {
+
   if (isInfinity(numberString)) return "Error";
   if (numberString === ".") return "0.";
 
   const strNumber = useRounding
-      ? roundWithMaxDigits(numberString, maxDigits)
-      : numberString;
+    ? trimTrailingFractionalZeros(roundToMaximalPrecision(numberString, maxDigits))
+    : numberString;
 
-  return formatNumberString(strNumber, { maxDigits });
+  return formatNumber(strNumber, maxDigits);
 };
 
 function isInfinity (number: string) {
   return number === "Infinity";
 }
 
-function formatNumberString(strNumber: string, { maxDigits }: FormattingOptions) {
+function formatNumber(strNumber: string, maxDigits: number) {
   const parsedNumber = parseFloat(strNumber);
 
   if (isExponentialNotation(strNumber)) {
     const fixedNumber = convertToFixedNotation(parsedNumber);
-    if (exceedsMaxDigits(fixedNumber, MAX_DIGITS)) {
+    if (exceedsMaxDigits(fixedNumber, maxDigits)) {
       return parsedNumber.toExponential(0);
     }
+    return fixedNumber;
   }
 
   if (exceedsMaxDigits(strNumber, maxDigits)) {
     return parsedNumber.toExponential(0).replace("+", "");
   }
 
+  return formatFixedPointNumber(strNumber, parsedNumber);
+}
+
+function formatFixedPointNumber(strNumber: string, parsedNumber: number) {
   const fractionalDigits = strNumber.split(".")[1]?.length ?? 0;
   const suffix = strNumber.endsWith(".") ? "." : "";
 
@@ -50,23 +55,25 @@ function isExponentialNotation(strNumber: string) {
 }
 
 function convertToFixedNotation(number: number) {
-  return formatNumber(number, { notation: 'fixed' });
+  return format(number, { notation: 'fixed' });
 }
 
 function exceedsMaxDigits(strNumber: string, maxDigits: number) {
   return strNumber.replace(".", "").length > maxDigits;
 }
 
-function roundWithMaxDigits(strNumber: string, maxDigits: number) {
-  if (isExponentialNotation(strNumber)) return strNumber;
-  const floatNumber = parseFloat(strNumber);
-  const fractionalDigits = computeFractionalDigits(strNumber, maxDigits)
-  const fixedNumber = floatNumber.toFixed(fractionalDigits);
-  const fixedNumberWithNoTrailingZeros = parseFloat(fixedNumber).toString();
-  return fixedNumberWithNoTrailingZeros;
+function trimTrailingFractionalZeros(strNumber: string) {
+  return strNumber.replace(/(\.\d*?[1-9])0*$/, "$1");
 }
 
-function computeFractionalDigits(strNumber: string, maxDigits: number) {
+function roundToMaximalPrecision(strNumber: string, maxDigits: number) {
+  if (isExponentialNotation(strNumber)) return strNumber;
+  const floatNumber = parseFloat(strNumber);
+  const fractionalDigits = computeAvailableFractionalDigits(strNumber, maxDigits)
+  return floatNumber.toFixed(fractionalDigits);
+}
+
+function computeAvailableFractionalDigits(strNumber: string, maxDigits: number) {
   const numberParts = strNumber.split(".");
   if (numberParts.length < 2) return 0;
   const integerPart = numberParts[0];
