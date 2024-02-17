@@ -46,8 +46,9 @@ function allClear() {
     currentOperand: "0",
     expression: "",
     operator: undefined,
-    lastOperation: undefined,
     lastInput: undefined,
+    lastOperand: undefined,
+    lastOperation: undefined,
     output: "0"
   };
 }
@@ -56,8 +57,9 @@ function clear(calc: CalcState) {
   return {
     ...calc,
     currentOperand: "0",
-    lastOperation: undefined,
     lastInput: "AC",
+    lastOperand: undefined,
+    lastOperation: undefined,
     output: "0"
   };
 }
@@ -101,19 +103,26 @@ function updateCurrentOperand (calc: CalcState, digit: string) {
   };
 }
 
-function updateExpression (calc: CalcState, newOperator: string) {
+function updateExpression (calc: CalcState, newOperator: string): CalcState {
   if (newOperator === calc.lastInput) return calc;
 
-  const expression = isOperator(calc.lastInput)
-    ? calc.expression.slice(-1)
-    : calc.expression + calc.currentOperand;
+  const expression = calc.currentOperand !== ""
+    ? calc.expression + calc.currentOperand
+    : calc.expression.substring(0, calc.expression.length - 1);
+    
+  const operand = calc.currentOperand !== ""
+    ? calc.currentOperand
+    : calc.lastOperand ?? "0";
+
+  const output = buildOutputForNewOperator(operand, expression, newOperator);
 
   return {
     ...calc,
     currentOperand: "",
     expression: expression + newOperator,
+    lastOperand: operand,
     lastInput: newOperator,
-    output: buildOutputForNewOperator(calc, expression, newOperator)
+    output,
   };
 }
 
@@ -143,18 +152,19 @@ function repeatLastOperation(calc: CalcState) {
 
 function getLastOperation(expression: string, currentOperand: string) {
   const { lastOperator, i } = getLastOperator(expression);
-  return (lastOperator)
+  const lastOperation = (lastOperator)
     ? expression.substring(i) + currentOperand
     : "";
+  return lastOperation;
 }
 
-function buildOutputForNewOperator(calc: CalcState, expression: string, newOperator: string) {
+function buildOutputForNewOperator(operand: string, expression: string, newOperator: string) {
   const evaluationIndex = getEvaluationIndex(expression, newOperator);
   if (evaluationIndex > -1) {
     const evaluation = evaluate(expression.substring(evaluationIndex));
     return formatNumberString(evaluation.toString(), { maxDigits: MAX_DIGITS });
   }
-  return formatNumberString(calc.currentOperand, { maxDigits: MAX_DIGITS });
+  return formatNumberString(operand, { maxDigits: MAX_DIGITS });
 }
 
 function getEvaluationIndex(expression: string, newOperator: string) {

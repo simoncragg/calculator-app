@@ -2,8 +2,9 @@ export interface CalcState {
   currentOperand: string,
   expression: string,
   operator?: string,
-  lastOperation?: string,
   lastInput?: string,
+  lastOperand?: string;
+  lastOperation?: string,
   output: string;
 }
   

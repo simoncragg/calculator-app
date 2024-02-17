@@ -155,6 +155,17 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
+test.each([
+  {inputs: "÷×+−+5=", expected: "5"},
+  {inputs: "÷×+−+−5=", expected: "-5"},
+  {inputs: "2÷×+−+×÷1=", expected: "2"},
+  {inputs: "1÷×+−+×2=", expected: "2"}
+])("can handle consecutive operation selections: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
 const pressButtons = (inputs: string) => {
   for (const input of inputs.split("")) {
     pressButton(input);
