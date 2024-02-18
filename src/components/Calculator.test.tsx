@@ -57,7 +57,7 @@ test.each([
   {inputs: "1÷1=", expected: "1"},
   {inputs: "10÷5=", expected: "2"},
   {inputs: "100÷0.5=", expected: "200"},
-])("can do arithmetc: $inputs [$expected]", async ({inputs, expected}) => {
+])("can do arithmetic: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
@@ -105,7 +105,28 @@ test.each([
   {inputs: "50%", expected: "0.5"},
   {inputs: "5%", expected: "0.05"},
   {inputs: "0.5%", expected: "0.005"}
-])("can calculate percent: $inputs [$expected]", async ({inputs, expected}) => {
+])("can calculate decimal percentage of a single operand in relation to 100: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
+test.each([
+  {inputs: "100+50%", expected: "50"},
+  {inputs: "100+200%", expected: "200"},
+  {inputs: "300+25%", expected: "75"},
+])("can calculate percentage of current operand in relation to the last operand: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
+test.each([
+  {inputs: "100+50%=", expected: "150"},
+  {inputs: "100−50%=", expected: "50"},
+  {inputs: "100×10%=", expected: "1,000"},
+  {inputs: "100÷10%=", expected: "10"},
+])("can perform arithmetic operations with percentage: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);

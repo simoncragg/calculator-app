@@ -83,7 +83,10 @@ function invertNumber(calc: CalcState): CalcState {
 function calculatePercent(calc: CalcState): CalcState {
   if (calc.lastInput === "=" && calc.output === "Error") return calc;
 
-  const percentResult = parseFloat(calc.currentOperand) / 100;
+  const percentResult = calc.lastOperand
+    ? parseFloat(calc.currentOperand) * parseFloat(calc.lastOperand) / 100
+    : parseFloat(calc.currentOperand) / 100;
+
   const strPercentResult = percentResult.toString();
   const output = formatNumberString(strPercentResult, { maxDigits: MAX_DIGITS });
 
