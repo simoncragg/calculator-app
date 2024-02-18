@@ -176,23 +176,32 @@ function getLastOperation(expression: string, currentOperand: string): string {
 }
 
 function buildOutputForNewOperator(operand: string, expression: string, newOperator: string): string {
-  const evaluationIndex = getEvaluationIndex(expression, newOperator);
-  if (evaluationIndex > -1) {
-    const evaluation = evaluate(expression.substring(evaluationIndex));
+  const expressionToEvaluate = getExpressionToEvaluate(expression, newOperator);
+  if (expressionToEvaluate) {
+    const evaluation = evaluate(expressionToEvaluate);
     return formatNumberString(evaluation.toString(), { maxDigits: MAX_DIGITS });
   }
 
   return formatNumberString(operand, { maxDigits: MAX_DIGITS });
 }
 
+function getExpressionToEvaluate(expression: string, newOperator: string): string | undefined {
+  const index = getEvaluationIndex(expression, newOperator);
+  return index > -1
+    ? expression.substring(index)
+    : undefined;
+}
+
 function getEvaluationIndex(expression: string, newOperator: string): number {
-  const {lastOperator, index } = getLastOperator(expression);
+  let result = getLastOperator(expression);
+  if (!result.lastOperator) return -1;
 
-  if (!lastOperator) return -1;
-  if (isDivideOrMultiply(lastOperator) && isDivideOrMultiply(newOperator)) return index-1;
-  if (isAddOrSubtract(lastOperator) && isAddOrSubtract(newOperator)) return 0;
+  if (isDivideOrMultiply(newOperator) && isAddOrSubtract(result.lastOperator)) {
+    return -1;
+  }
 
-  return -1;
+  result = getLastOperator(expression.substring(0, result.index));
+  return result.index > -1 ? result.index + 1 : 0;
 }
 
 function getLastOperator(expression: string): GetLastOperatorResultType {

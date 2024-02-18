@@ -70,6 +70,10 @@ test.each([
   {inputs: "5÷5÷", expected: "1"},
   {inputs: "5×5÷", expected: "25"},
   {inputs: "5÷5×", expected: "1"},
+  {inputs: "5×5+", expected: "25"},
+  {inputs: "5×5−", expected: "25"},
+  {inputs: "5÷5+", expected: "1"},
+  {inputs: "5÷5−", expected: "1"},
   {inputs: "5+5×", expected: "5"},
   {inputs: "5+5÷", expected: "5"},
   {inputs: "5−5×", expected: "5"},
@@ -78,6 +82,10 @@ test.each([
   {inputs: "5−5×5×", expected: "25"},
   {inputs: "5+5÷5×", expected: "1"},
   {inputs: "5−5÷5×", expected: "1"},
+  {inputs: "300×2×", expected: "600"},
+  {inputs: "300×100÷", expected: "30,000"},
+  {inputs: "300÷2÷", expected: "150"},
+  {inputs: "300÷100×", expected: "3"},
 ])("can display any MDAS simplification steps when an operator is selected: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
