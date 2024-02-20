@@ -17,6 +17,7 @@ interface DisplayProps {
 
 const Display = ({ value, lastInput }: DisplayProps) => {
   const [fontSize, setFontSize] = useState<string>("86px");
+  const [showEqualsIndicator, setShowEqualsIndicator] = useState(false);
 
   useEffect(() => {
     if (value) {
@@ -24,10 +25,18 @@ const Display = ({ value, lastInput }: DisplayProps) => {
     }
   }, [value]);
 
+  useEffect(() => {
+    setShowEqualsIndicator(lastInput === "=");
+  }, [lastInput]);
+
   return (
     <div className="relative flex w-full h-24 items-center justify-end mb-6 bg-[#687] font-sans rounded shadow-inner shadow-black">
-
+      
       <OperatorIndicator lastInput={lastInput} />
+
+      {showEqualsIndicator && (
+        <span data-testid="equals-indicator" className="absolute -top-[7px] right-2 text-3xl text-stone-800">=</span>
+      )}
 
       <span data-testid="output" className="pt-4 px-3.5 text-stone-800" style={{ fontSize }}>
         {value}

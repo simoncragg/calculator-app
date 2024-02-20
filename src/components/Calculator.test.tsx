@@ -10,7 +10,12 @@ test("displays zero on start up", async () => {
 
 test("does not display an operator indicator on start up", async () => {
   render(<Calculator />);
-  await assertOperatorIndicatorsAreHidden();
+  await assertElementIsHidden("operator-indicator");
+});
+
+test("does not display the equals indicator on start up", async () => {
+  render(<Calculator />);
+  await assertElementIsHidden("equals-indicator");
 });
 
 test.each([
@@ -155,7 +160,28 @@ test.each([
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
-  await assertOperatorIndicatorsAreHidden();
+  await assertElementIsHidden("operator-indicator");
+  if (!inputs.endsWith("=")) {
+    await assertElementIsHidden("equals-indicator");
+  }
+});
+
+test.each([
+  "5+C",
+  "5÷5CA"
+])("can clear operator indicators: $inputs [$expected]", async (inputs) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertElementIsHidden("operator-indicator");
+});
+
+test.each([
+  "1+1=C",
+  "5÷5=CA"
+])("can clear equals indicators: $inputs [$expected]", async (inputs) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertElementIsHidden("equals-indicator");
 });
 
 test.each([
@@ -225,6 +251,20 @@ test.each([
   expect(indicatorEl).not.toBeInTheDocument();
 });
 
+test("the equals indicator is displayed when the equals button is pressed", async () => {
+  render(<Calculator />);
+  pressButtons("1+1=");
+  const indicatorEl = screen.queryByTestId("equals-indicator");
+  await waitFor(() => indicatorEl);
+  expect(indicatorEl).toBeInTheDocument();
+});
+
+test("the equals indicator is hidden when an operand pressed", async () => {
+  render(<Calculator />);
+  pressButtons("=3");
+  await assertElementIsHidden("equals-operator");
+});
+
 const pressButtons = (inputs: string) => {
   for (const input of inputs.split("")) {
     pressButton(input);
@@ -253,6 +293,8 @@ const assertOperatorIndicatorIsDisplayed = async (expectedSymbol: string) => {
   expect(indicatorEl).toHaveTextContent(expectedSymbol);
 };
 
-const assertOperatorIndicatorsAreHidden = async() => {
-  expect(screen.queryByTestId("operator-indicator")).not.toBeInTheDocument();
+const assertElementIsHidden = async (testId: string) => {
+  const el = screen.queryByTestId(testId);
+  await waitFor(() => el);
+  expect(el).not.toBeInTheDocument();
 };
