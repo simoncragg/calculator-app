@@ -29,7 +29,7 @@ const Screen = ({ value }: ScreenProps) => {
   return (
     <div 
       data-testid="output" 
-      className={`flex w-full h-24 items-center justify-end mb-2.5 text-white py-0 px-3.5 bg-black`}
+      className="flex w-full h-24 items-center justify-end mb-6 px-3.5 bg-[#687] font-sans text-stone-800 rounded shadow-inner shadow-black"
       style={{ fontSize: `${size}`}}
     >
       {value}

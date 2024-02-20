@@ -1,23 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Saira:wdth,wght@85,100..900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
-  .calculator {
-    @apply w-[370px] h-[640px] pt-14 pb-10 px-4 rounded-xl bg-black shadow-none md:shadow-custom;
-  }
-
   button, [type='button'] {
-    @apply bg-charcoal opacity-100 text-3xl text-white font-bold cursor-pointer rounded-full border-0 outline-0 hover:bg-charcoal-dark active:bg-charcoal-light;
+    @apply p-[10%] bg-charcoal-light opacity-100 text-3xl text-white cursor-pointer rounded-lg border-0 outline-0 shadow shadow-black active:shadow-none active:scale-95;
   }
 
   button.fn {
-    @apply text-charcoal-dark bg-gray hover:bg-gray-dark active:bg-gray-light;
+    @apply text-charcoal-dark bg-gray
   }
 
   button.sign {
-    @apply text-4xl bg-orange hover:bg-orange-dark active:bg-orange-light disabled:bg-white disabled:text-orange;
+    @apply text-4xl font-serif bg-orange
   }
 }
