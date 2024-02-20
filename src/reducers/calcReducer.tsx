@@ -44,9 +44,8 @@ export default function calcReducer(calc: CalcState, action: Action): CalcState 
 
 function allClear(): CalcState {
   return {
-    currentOperand: "0",
     expression: "",
-    operator: undefined,
+    currentOperand: "0",
     lastInput: undefined,
     lastOperand: undefined,
     lastOperation: undefined,

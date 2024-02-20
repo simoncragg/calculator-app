@@ -1,5 +1,5 @@
 import { useReducer } from "react";
-import Screen from "./Screen";
+import Display from "./Display";
 import Button from "./Button";
 import OperatorButton from "./OperatorButton";
 import calcReducer from "../reducers/calcReducer";
@@ -52,7 +52,7 @@ const Calculator = () => {
     <div className="flex flex-col w-full md:w-[370px] max-h-90 md:h-auto p-2 bg-zinc-900 md:shadow-drop rounded-xl">
       <div className="flex flex-col px-4 py-5 h-full md:h-auto bg-zinc-800 rounded-xl shadow-edge">
 
-        <Screen value={calc.output} />
+        <Display value={calc.output} lastInput={calc.lastInput} />
  
         <div className="w-full h-full grid grid-cols-4 grid-rows-5 gap-2.5">
           <Button className="fn" onClick={handleClearButtonClick}>{calc.output === "0" ? "AC" : "C"}</Button>

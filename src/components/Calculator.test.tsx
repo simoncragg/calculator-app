@@ -1,11 +1,16 @@
-import {render, fireEvent, waitFor, screen} from "@testing-library/react"
 import "@testing-library/jest-dom"
+import { render, fireEvent, waitFor, screen } from "@testing-library/react"
 import Calculator from "./Calculator"
 import { INVERT_SYMBOL } from "../constants";
 
 test("displays zero on start up", async () => {
   render(<Calculator />);
   expect(screen.getByTestId("output")).toHaveTextContent("0");
+});
+
+test("does not display an operator indicator on start up", async () => {
+  render(<Calculator />);
+  await assertOperatorIndicatorsAreHidden();
 });
 
 test.each([
@@ -86,7 +91,7 @@ test.each([
   {inputs: "300×100÷", expected: "30,000"},
   {inputs: "300÷2÷", expected: "150"},
   {inputs: "300÷100×", expected: "3"},
-])("can display any MDAS simplification steps when an operator is selected: $inputs [$expected]", async ({inputs, expected}) => {
+])("can display MDAS simplification steps when an operator is selected: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
@@ -150,6 +155,7 @@ test.each([
   render(<Calculator />);
   pressButtons(inputs);
   await assertOutputIsEqualTo(expected);
+  await assertOperatorIndicatorsAreHidden();
 });
 
 test.each([
@@ -195,6 +201,30 @@ test.each([
   await assertOutputIsEqualTo(expected);
 });
 
+test.each([
+  {inputs: "+", expected: "+"},
+  {inputs: "−", expected: "−"},
+  {inputs: "×", expected: "×"},
+  {inputs: "÷", expected: "÷"},
+])("can display the correct operator indicator when an operator is pressed", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOperatorIndicatorIsDisplayed(expected);
+});
+
+test.each([
+  "+3",
+  "−3",
+  "×3",
+  "÷3",
+])("operator indicator is hidden when an operand is pressed", async (inputs) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  const indicatorEl = screen.queryByTestId("operator-indicator");
+  await waitFor(() => indicatorEl);
+  expect(indicatorEl).not.toBeInTheDocument();
+});
+
 const pressButtons = (inputs: string) => {
   for (const input of inputs.split("")) {
     pressButton(input);
@@ -215,4 +245,14 @@ const assertOutputIsEqualTo = async (expected: string) => {
   const outputEl = screen.getByTestId("output");
   await waitFor(() => outputEl);
   expect(outputEl).toHaveTextContent(expected);
+};
+
+const assertOperatorIndicatorIsDisplayed = async (expectedSymbol: string) => {
+  const indicatorEl = screen.getByTestId("operator-indicator");
+  await waitFor(() => indicatorEl);
+  expect(indicatorEl).toHaveTextContent(expectedSymbol);
+};
+
+const assertOperatorIndicatorsAreHidden = async() => {
+  expect(screen.queryByTestId("operator-indicator")).not.toBeInTheDocument();
 };
