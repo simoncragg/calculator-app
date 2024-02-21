@@ -2,6 +2,8 @@ import { useReducer } from "react";
 import Display from "./Display";
 import Button from "./Button";
 import OperatorButton from "./OperatorButton";
+import ProductLabel from "./ProductLabel";
+import SolarPanel from "./SolarPanel";
 import calcReducer from "../reducers/calcReducer";
 import { ActionTypes, INVERT_SYMBOL } from "../constants";
 
@@ -54,6 +56,11 @@ const Calculator = () => {
 
         <Display value={calc.output} lastInput={calc.lastInput} />
  
+        <div className="flex flex-row justify-between">
+          <SolarPanel />
+          <ProductLabel />
+        </div>
+
         <div className="w-full h-full grid grid-cols-4 grid-rows-5 gap-2.5">
           <Button className="fn" onClick={handleClearButtonClick}>{calc.output === "0" ? "AC" : "C"}</Button>
           <Button className="fn" onClick={handleInvertNumberButtonClick}>{INVERT_SYMBOL}</Button>
