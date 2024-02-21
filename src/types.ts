@@ -1,6 +1,6 @@
 export interface CalcState {
   currentOperand: string,
-  expression: string,
+  expression: string[],
   lastInput?: string,
   lastOperand?: string;
   lastOperation?: string,

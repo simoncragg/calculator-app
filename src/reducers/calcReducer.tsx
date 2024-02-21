@@ -44,7 +44,7 @@ export default function calcReducer(calc: CalcState, action: Action): CalcState 
 
 function allClear(): CalcState {
   return {
-    expression: "",
+    expression: [],
     currentOperand: "0",
     output: "0",
   };
@@ -114,8 +114,8 @@ function updateExpression (calc: CalcState, newOperator: string): CalcState {
   if (newOperator === calc.lastInput) return calc;
 
   const expression = calc.currentOperand !== ""
-    ? calc.expression + calc.currentOperand
-    : calc.expression.substring(0, calc.expression.length - 1);
+    ? [...calc.expression, calc.currentOperand]
+    : calc.expression.slice(0, -1);
 
   const operand = calc.currentOperand !== ""
     ? calc.currentOperand
@@ -126,7 +126,7 @@ function updateExpression (calc: CalcState, newOperator: string): CalcState {
   return {
     ...calc,
     currentOperand: "",
-    expression: expression + newOperator,
+    expression: [...expression, newOperator],
     lastOperand: operand,
     lastInput: newOperator,
     output,
@@ -137,7 +137,7 @@ function evaluateExpression (calc: CalcState): CalcState {
   if (calc.lastInput === "=") return repeatLastOperation(calc);
   
   const currentOperand = calc.currentOperand ? calc.currentOperand : calc.lastOperand!;
-  const expression = calc.expression + currentOperand;
+  const expression = [...calc.expression, currentOperand].join("");
   const result = evaluate(expression).toString();
   const lastOperation = getLastOperation(calc.expression, currentOperand);
   const output = formatNumberString(result, { maxDigits: MAX_DIGITS, useRounding: true });
@@ -145,7 +145,7 @@ function evaluateExpression (calc: CalcState): CalcState {
   return {
     ...calc,
     currentOperand: result,
-    expression: "",
+    expression: [],
     lastOperation,
     lastInput: "=",
     output,
@@ -163,16 +163,16 @@ function repeatLastOperation(calc: CalcState): CalcState {
   };
 }
 
-function getLastOperation(expression: string, currentOperand: string): string {
+function getLastOperation(expression: string[], currentOperand: string): string {
   const { lastOperator, index } = getLastOperator(expression);
   const lastOperation = lastOperator
-    ? expression.substring(index) + currentOperand
-    : "";
+    ? [...expression.slice(index), currentOperand]
+    : [];
 
-  return lastOperation;
+  return lastOperation.join("");
 }
 
-function buildOutputForNewOperator(operand: string, expression: string, newOperator: string): string {
+function buildOutputForNewOperator(operand: string, expression: string[], newOperator: string): string {
   const expressionToEvaluate = getExpressionToEvaluate(expression, newOperator);
   if (expressionToEvaluate) {
     const evaluation = evaluate(expressionToEvaluate);
@@ -182,29 +182,24 @@ function buildOutputForNewOperator(operand: string, expression: string, newOpera
   return formatNumberString(operand, { maxDigits: MAX_DIGITS });
 }
 
-function getExpressionToEvaluate(expression: string, newOperator: string): string | undefined {
-  const index = getEvaluationIndex(expression, newOperator);
-  return index > -1
-    ? expression.substring(index)
-    : undefined;
+function getExpressionToEvaluate(expression: string[], newOperator: string): string | undefined {
+  let { lastOperator, index } = getLastOperator(expression);
+
+  if (!lastOperator) return undefined;
+  if (isDivideOrMultiply(newOperator) && isAddOrSubtract(lastOperator)) return undefined;
+
+  return expression
+    .slice(index - 1)
+    .join("");
 }
 
-function getEvaluationIndex(expression: string, newOperator: string): number {
-  let result = getLastOperator(expression);
-  if (!result.lastOperator) return -1;
-
-  if (isDivideOrMultiply(newOperator) && isAddOrSubtract(result.lastOperator)) {
-    return -1;
-  }
-
-  result = getLastOperator(expression.substring(0, result.index));
-  return result.index > -1 ? result.index + 1 : 0;
-}
-
-function getLastOperator(expression: string): GetLastOperatorResultType {
+function getLastOperator(expression: string[]): GetLastOperatorResultType {
   for (let i = expression.length - 1; i > -1; i--) {
     if (isOperator(expression[i])) {
-      return { lastOperator: expression[i], index: i };
+      return { 
+        lastOperator: expression[i],
+        index: i
+      };
     }
   }
   

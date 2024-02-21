@@ -11,7 +11,7 @@ const Calculator = () => {
   
   const initialState = {
       currentOperand: "0",
-      expression: "",
+      expression: [],
       output: "0",
   };
 
