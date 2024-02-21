@@ -74,6 +74,17 @@ test.each([
 });
 
 test.each([
+  {inputs: "1+=", expected: "2"},
+  {inputs: "2−=", expected: "0"},
+  {inputs: "3×=", expected: "9"},
+  {inputs: "4÷=", expected: "1"},
+])("can infer missing operand: $inputs [$expected]", async ({inputs, expected}) => {
+  render(<Calculator />);
+  pressButtons(inputs);
+  await assertOutputIsEqualTo(expected);
+});
+
+test.each([
   {inputs: "5+5+", expected: "10"},
   {inputs: "5+5−", expected: "10"},
   {inputs: "5×5×", expected: "25"},
@@ -190,6 +201,7 @@ test.each([
   {inputs: "4×2====", expected: "64"},
   {inputs: "64÷2====", expected: "4"},
   {inputs: "5+5===÷4=", expected: "5"},
+  {inputs: "5+====", expected: "25"},
 ])("can repeat last operation: $inputs [$expected]", async ({inputs, expected}) => {
   render(<Calculator />);
   pressButtons(inputs);

@@ -119,7 +119,7 @@ function updateExpression (calc: CalcState, newOperator: string): CalcState {
   const expression = calc.currentOperand !== ""
     ? calc.expression + calc.currentOperand
     : calc.expression.substring(0, calc.expression.length - 1);
-    
+
   const operand = calc.currentOperand !== ""
     ? calc.currentOperand
     : calc.lastOperand ?? "0";
@@ -138,10 +138,11 @@ function updateExpression (calc: CalcState, newOperator: string): CalcState {
 
 function evaluateExpression (calc: CalcState): CalcState {
   if (calc.lastInput === "=") return repeatLastOperation(calc);
-
-  const expression = calc.expression + calc.currentOperand;
+  
+  const currentOperand = calc.currentOperand ? calc.currentOperand : calc.lastOperand!;
+  const expression = calc.expression + currentOperand;
   const result = evaluate(expression).toString();
-  const lastOperation = getLastOperation(calc.expression, calc.currentOperand);
+  const lastOperation = getLastOperation(calc.expression, currentOperand);
   const output = formatNumberString(result, { maxDigits: MAX_DIGITS, useRounding: true });
 
   return {
