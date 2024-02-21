@@ -1,5 +1,5 @@
-import Display from "./Display";
 import Button from "./Button";
+import Display from "./Display";
 import OperatorButton from "./OperatorButton";
 import ProductLabel from "./ProductLabel";
 import SolarPanel from "./SolarPanel";
