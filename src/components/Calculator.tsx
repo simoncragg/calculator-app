@@ -1,21 +1,14 @@
-import { useReducer } from "react";
 import Display from "./Display";
 import Button from "./Button";
 import OperatorButton from "./OperatorButton";
 import ProductLabel from "./ProductLabel";
 import SolarPanel from "./SolarPanel";
-import calcReducer from "../reducers/calcReducer";
 import { ActionTypes, INVERT_SYMBOL } from "../constants";
+import { useCalculator } from "../CalculatorStore";
 
 const Calculator = () => {
   
-  const initialState = {
-      currentOperand: "0",
-      expression: [],
-      output: "0",
-  };
-
-  const [calc, dispatch] = useReducer(calcReducer, initialState);
+  const { calc, dispatch } = useCalculator();
 
   const handleClearButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const { innerHTML } = e.target as HTMLButtonElement; 
