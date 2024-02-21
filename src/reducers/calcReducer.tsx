@@ -46,9 +46,6 @@ function allClear(): CalcState {
   return {
     expression: "",
     currentOperand: "0",
-    lastInput: undefined,
-    lastOperand: undefined,
-    lastOperation: undefined,
     output: "0",
   };
 }

@@ -12,9 +12,6 @@ const Calculator = () => {
   const initialState = {
       currentOperand: "0",
       expression: "",
-      lastInput: undefined,
-      lastOperand: undefined,
-      lastOperation: undefined,
       output: "0",
   };
 
