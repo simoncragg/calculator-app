@@ -17,7 +17,7 @@ test("does not display an operator indicator on start up", async () => {
 
 test("does not display the equals indicator on start up", async () => {
   renderCalculator();
-  await assertElementIsHidden("equals-indicator");
+  await assertElementIsHidden("equals");
 });
 
 test.each([
@@ -242,10 +242,10 @@ test.each([
 });
 
 test.each([
-  {inputs: "+", expected: "+"},
-  {inputs: "−", expected: "−"},
-  {inputs: "×", expected: "×"},
-  {inputs: "÷", expected: "÷"},
+  {inputs: "+", expected: "Plus sign"},
+  {inputs: "−", expected: "Minus sign"},
+  {inputs: "×", expected: "Multiply sign"},
+  {inputs: "÷", expected: "Divide by sign"},
 ])("can display the correct operator indicator when an operator is pressed", async ({inputs, expected}) => {
   renderCalculator();
   pressButtons(inputs);
@@ -309,10 +309,10 @@ const assertOutputIsEqualTo = async (expected: string) => {
   expect(outputEl).toHaveTextContent(expected);
 };
 
-const assertOperatorIndicatorIsDisplayed = async (expectedSymbol: string) => {
-  const indicatorEl = screen.getByTestId("operator-indicator");
+const assertOperatorIndicatorIsDisplayed = async (expectedAriaLabel: string) => {
+  const indicatorEl = screen.getByTestId('operator-indicator');
   await waitFor(() => indicatorEl);
-  expect(indicatorEl).toHaveTextContent(expectedSymbol);
+  expect(indicatorEl).toHaveAccessibleName(expectedAriaLabel);
 };
 
 const assertElementIsHidden = async (testId: string) => {

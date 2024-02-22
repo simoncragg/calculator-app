@@ -36,7 +36,8 @@ const Display = () => {
 
       {showEqualsIndicator && (
         <span 
-          data-testid="equals-indicator" 
+          data-testid="equals-indicator"
+          aria-label="Equals sign"
           className="absolute -top-[7px] right-2 text-3xl text-stone-800"
           style={{ opacity: voltageLevel }}
         >

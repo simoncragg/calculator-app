@@ -1,55 +1,52 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { LuPlus, LuMinus, LuX, LuDivide } from "react-icons/lu";
 import { useCalculator } from "../CalculatorStore";
 
-const OPERATOR_WIDTH = 17;
+const OPERATOR_WIDTH = 15;
 const START_POSITION = 46.5;
 
-const symbolTranslations: { [key: string]: string } = {
-  "+": "+",
-  "-": "−",
-  "*": "×",
-  "/": "÷",
+const operatorLookup: { [key: string]: { ariaLabel: string, icon: React.ReactElement }} = {
+  "+": { ariaLabel: "Plus sign", icon: <LuPlus /> },
+  "-": { ariaLabel: "Minus sign", icon: <LuMinus /> },
+  "*": { ariaLabel: "Multiply sign", icon: <LuX /> },
+  "/": { ariaLabel: "Divide by sign", icon: <LuDivide /> },
 };
 
-const operators = Object.keys(symbolTranslations);
+const operators = Object.keys(operatorLookup);
 
 const OperatorIndicator = () => {
 
   const { calc } = useCalculator();
   const { lastInput, voltageLevel } = calc;
 
-  const [symbol, setSymbol] = useState<string>();
+  const [operator, setOperator] = useState<{ ariaLabel: string, icon: React.ReactElement } | undefined>();
   const [position, setPosition] = useState<number>(0); 
 
   useEffect(() => {
     if (!lastInput) return;
     if (operators.includes(lastInput)) {
-      setSymbol(symbolTranslations[lastInput]);
+      setOperator(operatorLookup[lastInput]);
       const pos = START_POSITION + OPERATOR_WIDTH * operators.indexOf(lastInput);
       setPosition(pos);
     } else {
-      setSymbol(undefined);
+      setOperator(undefined);
     }
   }, [lastInput]);
 
   return (
     <>
-      {symbol && (
+      {operator && (
         <div 
           className="absolute top-1" 
           style={{ right: `${position}px`, opacity: voltageLevel }}
         >
           <div className="relative">
             <span 
-              className="absolute w-[17px] leading-[1.1] text-stone-800 bg-stone-800 rounded-sm" 
-              aria-hidden="true">
-              &nbsp;
-            </span>
-            <span 
-              data-testid="operator-indicator" 
-              className="absolute -top-[9px] -right-[15px] font-bold text-[#687] text-2xl"
+              data-testid="operator-indicator"
+              aria-label={operator.ariaLabel}
+              className="absolute -top-0.5 -right-5 text-[#687] text-2xl bg-stone-800 rounded-sm scale-[65%]"
             >
-              {symbol}
+              {operator.icon}
             </span>
           </div>
         </div>
