@@ -44,7 +44,7 @@ const Calculator = () => {
     <div className="flex flex-col w-full md:w-[370px] max-h-90 md:h-auto p-2 bg-zinc-900 md:shadow-drop rounded-xl">
       <div className="flex flex-col px-4 py-5 h-full md:h-auto bg-zinc-800 rounded-xl shadow-edge">
 
-        <Display value={calc.output} lastInput={calc.lastInput} />
+        <Display />
  
         <div className="flex flex-row justify-between">
           <SolarPanel />

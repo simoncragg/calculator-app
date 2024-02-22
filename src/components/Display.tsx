@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+
 import OperatorIndicator from "./OperatorIndicator";
+import { useCalculator } from "../CalculatorStore";
 
 const calculateFontSize = (value: string): string => {
   const len = value.replace(/,/g, "").length;
@@ -10,20 +12,18 @@ const calculateFontSize = (value: string): string => {
   return "56px";
 };
 
-interface DisplayProps {
-  value: string;
-  lastInput?: string;
-}
-
-const Display = ({ value, lastInput }: DisplayProps) => {
+const Display = () => {
+  const { calc } = useCalculator();
+  const { output, lastInput, voltageLevel } = calc;
+  
   const [fontSize, setFontSize] = useState<string>("86px");
   const [showEqualsIndicator, setShowEqualsIndicator] = useState(false);
 
   useEffect(() => {
-    if (value) {
-      setFontSize(calculateFontSize(value));
+    if (output) {
+      setFontSize(calculateFontSize(output));
     }
-  }, [value]);
+  }, [output]);
 
   useEffect(() => {
     setShowEqualsIndicator(lastInput === "=");
@@ -32,15 +32,25 @@ const Display = ({ value, lastInput }: DisplayProps) => {
   return (
     <div className="relative flex w-full h-24 items-center justify-end mb-6 bg-[#687] font-sans rounded shadow-inner shadow-black">
       
-      <OperatorIndicator lastInput={lastInput} />
+      <OperatorIndicator />
 
       {showEqualsIndicator && (
-        <span data-testid="equals-indicator" className="absolute -top-[7px] right-2 text-3xl text-stone-800">=</span>
+        <span 
+          data-testid="equals-indicator" 
+          className="absolute -top-[7px] right-2 text-3xl text-stone-800"
+          style={{ opacity: voltageLevel }}
+        >
+            =
+          </span>
       )}
 
-      <span data-testid="output" className="pt-4 px-3.5 text-stone-800" style={{ fontSize }}>
-        {value}
+      <span 
+        data-testid="output" 
+        className="pt-4 px-3.5 text-stone-800" 
+        style={{ fontSize, opacity: voltageLevel }}>
+        {output}
       </span>
+      
     </div>
   );
 };

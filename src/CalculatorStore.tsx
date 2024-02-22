@@ -15,6 +15,7 @@ const initialState: CalcState = {
     currentOperand: "0",
     expression: [],
     output: "0",
+    voltageLevel: 1.0,
 };
 
 const CalculatorStore = createContext({} as ICalculatorContext);

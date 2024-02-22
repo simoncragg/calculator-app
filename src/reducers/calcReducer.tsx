@@ -1,5 +1,6 @@
 import type {
   Action,
+  AdjustVoltagePayload,
   CalcState,
   GetLastOperatorResultType,
   UpdateCurrentOperandPayload,
@@ -37,6 +38,10 @@ export default function calcReducer(calc: CalcState, action: Action): CalcState 
     case ActionTypes.EVALUATE_EXPRESSION:
       return evaluateExpression(calc);
 
+    case ActionTypes.ADJUST_VOLTAGE:
+      const { voltageLevel } = action.payload as AdjustVoltagePayload;
+      return adjustVoltage(calc, voltageLevel);
+
     default:
       return calc;
   }
@@ -47,6 +52,7 @@ function allClear(): CalcState {
     expression: [],
     currentOperand: "0",
     output: "0",
+    voltageLevel: 1,
   };
 }
 
@@ -162,6 +168,13 @@ function repeatLastOperation(calc: CalcState): CalcState {
     output,
   };
 }
+
+function adjustVoltage(calc: CalcState, voltageLevel: number): CalcState {
+  return {
+    ...calc,
+    voltageLevel,
+  }
+} 
 
 function getLastOperation(expression: string[], currentOperand: string): string {
   const { lastOperator, index } = getLastOperator(expression);

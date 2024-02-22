@@ -5,19 +5,24 @@ export interface CalcState {
   lastOperand?: string;
   lastOperation?: string,
   output: string;
+  voltageLevel: number;
 }
   
 export interface Action {
   type: string;
-  payload?: UpdateCurrentOperandPayload | UpdateExpressionPayload;
+  payload?: UpdateCurrentOperandPayload | UpdateExpressionPayload | AdjustVoltagePayload;
 }
-  
+
 export interface UpdateCurrentOperandPayload {
   digit: string;
 }
   
 export interface UpdateExpressionPayload {
   operator: string;
+}
+
+export interface AdjustVoltagePayload {
+  voltageLevel: number;
 }
 
 export interface GetLastOperatorResultType {
