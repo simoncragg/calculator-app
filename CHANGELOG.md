@@ -1,3 +1,22 @@
+# 1.1.0 (2024-02-22)
+
+[Compare v1.0.0 → v1.1.0](https://github.com/simoncragg/calculator-app/compare/v1.0.0...v1.1.0)
+
+### Bug Fixes
+
+    * fix defects in MDAS step evaluation display (6fd24cb (https://github.com/simoncragg/calculator-app/commit/6fd24cb539d3343a488c43dbf535c7d53ffe3049))
+      1. Handle multi-digit operands.
+      2. Evaluate the preceding Multiplication or Division step when the Add or Subtract operator is selected.
+
+### Features
+
+    * calculate percentage of the current operand in relation to the last operand (0c5b4bf (https://github.com/simoncragg/calculator-app/commit/0c5b4bff99b220133c15786d06cc4712ba3d646e))
+    * equals indicator (3d5bb12 (https://github.com/simoncragg/calculator-app/commit/3d5bb125e6162f3cd7e7269a7c098cbd3b6b9027))
+    * improve the presentation of the operator and equals indicators (247cfc9 (https://github.com/simoncragg/calculator-app/commit/247cfc90b60c8d964e1aa8138602871c4b65e4f5))
+    * infer missing operand (285c9fe (https://github.com/simoncragg/calculator-app/commit/285c9fee867d7ed5fbc0bb25c337f79917844ceb))
+    * interactive solar panel simulation (55449ef (https://github.com/simoncragg/calculator-app/commit/55449ef0922e25a5998aed1f72c43a805c68e81b))
+    * operator selection indicators (7b875c8 (https://github.com/simoncragg/calculator-app/commit/7b875c8fccf98a24defe026b9b577b9b180e8de3))
+
 # 1.0.0 (2024-02-17)
 
 ### Bug Fixes
