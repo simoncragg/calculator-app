@@ -1,19 +1,37 @@
-# calculator-app
-A basic calculator web app, built with react and the react testing library.
+# 🧮 Calculator App
+
+A sleek and intuitive Calculator web app, built with React and TypeScript.
+
+![image](./assets/calc-640x640-min.png)
 
 ## Install
 
-This project uses node and npm.
+*Before getting started, please ensure that you have Node.js version 20 or higher installed on your system.*
+
+Install the project dependencies by running:
+
+```bash
+$ npm i
+```
 
 ## Usage
 
-Run locally on the dev server
-```
+To run the Calculator app locally on your development server, execute the following command:
+
+```bash
 $ npm start
 ```
 
-Run tests
-```
+This will start the development server and open the Calculator app in your default web browser. Alternatively, you can navigate to http://localhost:3000 in your browser to access the app.
+
+## Testing
+
+To run the test suite, use the following command:
+
+```bash
 $ npm t
 ```
 
+## License
+
+This project is licensed under the MIT License.
