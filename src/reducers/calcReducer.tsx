@@ -52,7 +52,7 @@ function allClear(): CalcState {
     expression: [],
     currentOperand: "0",
     output: "0",
-    voltageLevel: 1,
+    voltageLevel: 1.0,
   };
 }
 
