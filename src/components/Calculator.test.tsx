@@ -20,8 +20,10 @@ it("does not display the equals indicator on start up", async () => {
 });
 
 it.each([
-  {inputs: "123456789", expected: "123,456,789"},
-  {inputs: "1.23456789", expected: "1.23456789"}
+  {inputs: "1234567890", expected: "123,456,789"},
+  {inputs: "1.234567890", expected: "1.23456789"},
+  {inputs: "1.234567890I", expected: "-1.23456789"},
+  {inputs: "1.23I4567890", expected: "-1.23456789"}
 ])("limits the maximum length of an operand to 9 digits: $inputs 🡢 $expected", async ({inputs, expected}) => {
   renderCalculator();
   pressButtons(inputs);

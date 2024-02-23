@@ -9,7 +9,8 @@ const calculateFontSize = (value: string): string => {
   if (len < 7) return "84px";
   if (len < 8) return "70px";
   if (len < 9) return "62px";
-  return "56px";
+  if (len < 10) return "56px";
+  return "53px";
 };
 
 const Display = () => {

@@ -54,7 +54,7 @@ function isExponentialNotation(strNumber: string): boolean {
 }
 
 function exceedsMaxDigits(strNumber: string, maxDigits: number): boolean {
-  return strNumber.replace(".", "").length > maxDigits;
+  return strNumber.replace(".", "").replace("-", "").length > maxDigits;
 }
 
 function convertToFixedNotation(number: number): string {
