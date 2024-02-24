@@ -25,13 +25,13 @@ function formatNumber(strNumber: string, maxDigits: number): string {
 
   if (isExponentialNotation(strNumber)) {
     const fixedNumber = convertToFixedNotation(parsedNumber);
-    if (exceedsMaxDigits(fixedNumber, maxDigits)) {
+    if (hasExceededMaxDigits(fixedNumber, maxDigits)) {
       return parsedNumber.toExponential(0);
     }
     return fixedNumber;
   }
 
-  if (exceedsMaxDigits(strNumber, maxDigits)) {
+  if (hasExceededMaxDigits(strNumber, maxDigits)) {
     return parsedNumber.toExponential(0).replace("+", "");
   }
 
@@ -53,7 +53,7 @@ function isExponentialNotation(strNumber: string): boolean {
   return strNumber.includes("e");
 }
 
-function exceedsMaxDigits(strNumber: string, maxDigits: number): boolean {
+function hasExceededMaxDigits(strNumber: string, maxDigits: number): boolean {
   return strNumber.replace(".", "").replace("-", "").length > maxDigits;
 }
 
