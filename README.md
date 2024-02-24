@@ -6,7 +6,7 @@ A sleek and intuitive Calculator web app, built with React and TypeScript.
 
 Live Demo: <a href="https://endearing-crepe-0516dc.netlify.app/" target="_blank">https://endearing-crepe-0516dc.netlify.app/</a>
 
-## Install
+## Installation
 
 *Before getting started, please ensure that you have Node.js version 20 or higher installed on your system.*
 
