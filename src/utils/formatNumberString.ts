@@ -1,4 +1,5 @@
 import { format } from "mathjs";
+import getDigitCount from "./getDigitCount";
 
 interface FormattingOptions {
   maxDigits: number;
@@ -54,7 +55,7 @@ function isExponentialNotation(strNumber: string): boolean {
 }
 
 function hasExceededMaxDigits(strNumber: string, maxDigits: number): boolean {
-  return strNumber.replace(".", "").replace("-", "").length > maxDigits;
+  return getDigitCount(strNumber) > maxDigits;
 }
 
 function convertToFixedNotation(number: number): string {

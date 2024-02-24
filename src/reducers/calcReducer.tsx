@@ -9,6 +9,7 @@ import type {
 
 import evaluate from '../utils/evaluate';
 import formatNumberString from "../utils/formatNumberString";
+import getDigitCount from "../utils/getDigitCount";
 import { ActionTypes, INVERT_SYMBOL, MAX_DIGITS } from '../constants';
 
 export default function calcReducer(calc: CalcState, action: Action): CalcState {
@@ -101,7 +102,7 @@ function calculatePercent(calc: CalcState): CalcState {
 }
 
 function updateCurrentOperand (calc: CalcState, digit: string): CalcState {
-  if (calc.currentOperand.replace(".", "").replace("-", "").length === MAX_DIGITS) return calc;
+  if (getDigitCount(calc.currentOperand) === MAX_DIGITS) return calc;
   if (digit === "." && calc.currentOperand.includes(".")) return calc;
 
   const isFirstDigit = calc.currentOperand === "0" && digit !== "." || calc.lastInput === "=";
