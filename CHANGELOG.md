@@ -1,3 +1,17 @@
+# 1.2.0 (2024-02-25)
+
+[Compare v1.1.0 → v1.2.0](https://github.com/simoncragg/calculator-app/compare/v1.1.0...v1.2.0)
+
+### Bug Fixes
+
+    * exclude inversion symbol from digit count (56a1577 (https://github.com/simoncragg/calculator-app/commit/56a15772f1813c52e03639c552d9bb418c755fca))
+    * update package-lock.json with 'engines' section from package.json (27cb809 (https://github.com/simoncragg/calculator-app/commit/27cb8092fb303591fc1bc3c2587fd88264d49463))
+
+### Features
+
+    * add engines section to package.json (daa91db (https://github.com/simoncragg/calculator-app/commit/daa91db8fbe1ba7c885fda7350728882094f0f4f))
+    * update meta description (2e4c2df (https://github.com/simoncragg/calculator-app/commit/2e4c2df9b6271b048a1005acfaac285489c6ccf1))
+
 # 1.1.0 (2024-02-22)
 
 [Compare v1.0.0 → v1.1.0](https://github.com/simoncragg/calculator-app/compare/v1.0.0...v1.1.0)
