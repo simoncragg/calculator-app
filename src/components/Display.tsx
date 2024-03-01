@@ -31,7 +31,7 @@ const Display = () => {
   }, [lastInput]);
 
   return (
-    <div className="relative flex w-full h-24 items-center justify-end mb-6 bg-[#687] font-sans rounded shadow-inner shadow-black">
+    <div className="relative flex w-full h-24 items-center justify-end mb-6 bg-[#687] font-sans rounded shadow-inner shadow-black overflow-hidden">
       
       <OperatorIndicator />
 
